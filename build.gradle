@@ -1,0 +1,13 @@
+plugins {
+    id 'java'
+}
+
+allprojects {
+    group 'cn.codethink'
+    version '1.0-SNAPSHOT'
+}
+
+ext {
+    antlrVersion = '4.12.0'
+    junitVersion = '5.9.2'
+}

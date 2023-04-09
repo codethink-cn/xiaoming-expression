@@ -1,0 +1,4 @@
+rootProject.name = 'xiaoming-expression'
+include 'xiaoming-expression-api'
+include 'xiaoming-expression-core'
+
