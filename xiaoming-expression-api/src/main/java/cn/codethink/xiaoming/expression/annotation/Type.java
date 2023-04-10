@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  *
  * @author Chuanwise
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Type {
     
@@ -19,7 +19,7 @@ public @interface Type {
      *
      * @return Java 类型
      */
-    Class<?> value();
+    Class<?> value() default Void.class;
     
     /**
      * 获取类型名

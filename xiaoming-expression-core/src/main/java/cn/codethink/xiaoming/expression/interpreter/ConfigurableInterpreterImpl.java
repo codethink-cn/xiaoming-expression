@@ -37,8 +37,8 @@ public class ConfigurableInterpreterImpl
         }
     
         final Method[] declaredMethods = objectClass.getDeclaredMethods();
-        final Class<?> javaClass = typeAnnotation.value();
-        final String name = typeAnnotation.name().isEmpty() ? objectClass.getSimpleName() : typeAnnotation.name();
+        final Class<?> javaClass = typeAnnotation.value() == Void.class ? objectClass : typeAnnotation.value();
+        final String name = typeAnnotation.name().isEmpty() ? javaClass.getSimpleName() : typeAnnotation.name();
     
         final Set<Constructor> constructors = new HashSet<>();
         final Type type = new JavaTypeImpl(name, javaClass, constructors);
@@ -47,6 +47,10 @@ public class ConfigurableInterpreterImpl
                 declaredMethod.getAnnotation(cn.codethink.xiaoming.expression.annotation.Constructor.class);
             if (constructorAnnotation == null) {
                 continue;
+            }
+    
+            if (!javaClass.isAssignableFrom(declaredMethod.getReturnType())) {
+                throw new IllegalArgumentException("Illegal return type of method: " + declaredMethod + ", expect: " + javaClass.getName());
             }
             
             constructors.add(new MethodConstructorImpl(type, object, declaredMethod));
