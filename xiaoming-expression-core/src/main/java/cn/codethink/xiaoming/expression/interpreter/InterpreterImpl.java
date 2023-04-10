@@ -6,7 +6,6 @@ import cn.codethink.xiaoming.expression.lang.Type;
 import cn.codethink.xiaoming.expression.lang.acl.Scanner;
 import cn.codethink.xiaoming.expression.lang.acl.parser;
 import com.google.common.base.Preconditions;
-import java_cup.runtime.Symbol;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -100,16 +99,16 @@ public class InterpreterImpl
         Preconditions.checkNotNull(expression, "Expression is null!");
         Preconditions.checkArgument(!expression.isEmpty(), "Expression is empty!");
         
-        return compile(new StringReader(expression), CompileConfiguration.getInstance());
+        return compile(new StringReader(expression), CompilationConfiguration.getInstance());
     }
     
     @Override
-    public Expression compile(String expression, CompileConfiguration configuration) throws CompileException {
+    public Expression compile(String expression, CompilationConfiguration configuration) throws CompileException {
         Preconditions.checkNotNull(expression, "Expression is null!");
         Preconditions.checkNotNull(configuration, "Configuration is null!");
         Preconditions.checkArgument(!expression.isEmpty(), "Expression is empty!");
         
-        return compile(new StringReader(expression), CompileConfiguration.getInstance());
+        return compile(new StringReader(expression), CompilationConfiguration.getInstance());
     }
     
     @Override
@@ -117,11 +116,11 @@ public class InterpreterImpl
     public Expression compile(Reader reader) throws CompileException {
         Preconditions.checkNotNull(reader, "Reader is null!");
     
-        return compile(reader, CompileConfiguration.getInstance());
+        return compile(reader, CompilationConfiguration.getInstance());
     }
     
     @Override
-    public Expression compile(Reader reader, CompileConfiguration configuration) throws CompileException {
+    public Expression compile(Reader reader, CompilationConfiguration configuration) throws CompileException {
         Preconditions.checkNotNull(reader, "Reader is null!");
         Preconditions.checkNotNull(configuration, "Configuration is null!");
     

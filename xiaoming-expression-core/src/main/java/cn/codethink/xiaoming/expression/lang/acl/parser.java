@@ -7,10 +7,9 @@ package cn.codethink.xiaoming.expression.lang.acl;
 
 import cn.codethink.xiaoming.expression.*;
 import cn.codethink.xiaoming.expression.interpreter.*;
-import java_cup.runtime.*;
+
 import java.util.*;
 import java.util.stream.Collectors;
-import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
   */
@@ -146,9 +145,9 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
   Interpreter interpreter;
-  CompileConfiguration configuration;
+  CompilationConfiguration configuration;
 
-  public void initialize(Interpreter interpreter, CompileConfiguration configuration) {
+  public void initialize(Interpreter interpreter, CompilationConfiguration configuration) {
     this.interpreter = interpreter;
     this.configuration = configuration;
   }

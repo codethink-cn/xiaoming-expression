@@ -1,7 +1,7 @@
 package cn.codethink.xiaoming.expression.interpreter;
 
-public class CompileConfigurationImpl
-    implements CompileConfiguration {
+public class CompilationConfigurationImpl
+    implements CompilationConfiguration {
     
     public static class BuilderImpl
         implements Builder {
@@ -15,20 +15,20 @@ public class CompileConfigurationImpl
         }
     
         @Override
-        public CompileConfiguration build() {
-            return new CompileConfigurationImpl(strict);
+        public CompilationConfiguration build() {
+            return new CompilationConfigurationImpl(strict);
         }
     }
     
-    private static final CompileConfiguration INSTANCE = CompileConfiguration.builder().build();
+    private static final CompilationConfiguration INSTANCE = CompilationConfiguration.builder().build();
     
-    public static CompileConfiguration getInstance() {
+    public static CompilationConfiguration getInstance() {
         return INSTANCE;
     }
     
     private final boolean strict;
     
-    public CompileConfigurationImpl(boolean strict) {
+    public CompilationConfigurationImpl(boolean strict) {
         this.strict = strict;
     }
     
@@ -38,9 +38,9 @@ public class CompileConfigurationImpl
     }
     
     @Override
-    public CompileConfiguration clone() {
+    public CompilationConfiguration clone() {
         try {
-            return (CompileConfiguration) super.clone();
+            return (CompilationConfiguration) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new AssertionError(e);
         }

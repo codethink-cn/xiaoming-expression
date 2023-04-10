@@ -66,7 +66,7 @@ public interface Interpreter {
      * @return 抽象语法树
      * @throws CompileException 编译错误
      */
-    Expression compile(String expression, CompileConfiguration configuration) throws CompileException;
+    Expression compile(String expression, CompilationConfiguration configuration) throws CompileException;
     
     /**
      * 编译表达式为抽象语法树
@@ -85,7 +85,7 @@ public interface Interpreter {
      * @return 抽象语法树
      * @throws CompileException 编译错误
      */
-    Expression compile(Reader reader, CompileConfiguration configuration) throws CompileException;
+    Expression compile(Reader reader, CompilationConfiguration configuration) throws CompileException;
     
     /**
      * 注册类型
