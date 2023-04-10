@@ -2,6 +2,7 @@ package cn.codethink.xiaoming.expression.api;
 
 import cn.codethink.xiaoming.expression.analyzer.AnalyzingConfiguration;
 import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
+import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
 import cn.codethink.xiaoming.expression.interpreter.ConfigurableInterpreter;
 import cn.codethink.xiaoming.expression.interpreter.Interpreter;
 
@@ -22,4 +23,7 @@ public interface API {
     
     CompilingConfiguration getCompileConfiguration();
     CompilingConfiguration.Builder getCompileConfigurationBuilder();
+    
+    FormattingConfiguration getFormattingConfiguration();
+    FormattingConfiguration.Builder getFormattingConfigurationBuilder();
 }

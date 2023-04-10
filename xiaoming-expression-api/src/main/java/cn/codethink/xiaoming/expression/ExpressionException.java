@@ -6,7 +6,7 @@ package cn.codethink.xiaoming.expression;
  * @author Chuanwise
  */
 public class ExpressionException
-    extends Exception {
+    extends RuntimeException {
     
     public ExpressionException() {
     }

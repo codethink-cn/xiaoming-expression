@@ -1,10 +1,6 @@
-package cn.codethink.xiaoming.expression.anlyzer;
+package cn.codethink.xiaoming.expression.formatter;
 
 import cn.codethink.xiaoming.expression.Expression;
-import cn.codethink.xiaoming.expression.analyzer.Analyzer;
-import cn.codethink.xiaoming.expression.analyzer.AnalyzingConfiguration;
-import cn.codethink.xiaoming.expression.analyzer.AnalyzingContext;
-import cn.codethink.xiaoming.expression.analyzer.AnalyzingException;
 import cn.codethink.xiaoming.expression.annotation.Subject;
 import cn.codethink.xiaoming.expression.interpreter.Interpreter;
 import cn.codethink.xiaoming.expression.type.Type;
@@ -15,8 +11,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 
-public class MethodAnalyzerImpl
-    implements Analyzer {
+public class MethodFormatterImpl
+    implements Formatter {
     
     private final Selector[] selectors;
     private final Method method;
@@ -24,27 +20,27 @@ public class MethodAnalyzerImpl
     private final Type type;
     
     private interface Selector {
-        Object select(AnalyzingContext context);
+        Object select(Object subject, FormattingContext context);
     }
     
-    private static class AnalyzingContextSelector
+    private static class FormattingContextSelector
         implements Selector {
         
-        private static final AnalyzingContextSelector INSTANCE = new AnalyzingContextSelector();
+        private static final FormattingContextSelector INSTANCE = new FormattingContextSelector();
         
         @Override
-        public Object select(AnalyzingContext context) {
+        public Object select(Object subject, FormattingContext context) {
             return context;
         }
     }
     
-    private static class AnalyzingConfigurationSelector
+    private static class FormattingConfigurationSelector
         implements Selector {
         
-        private static final AnalyzingConfigurationSelector INSTANCE = new AnalyzingConfigurationSelector();
+        private static final FormattingConfigurationSelector INSTANCE = new FormattingConfigurationSelector();
         
         @Override
-        public Object select(AnalyzingContext context) {
+        public Object select(Object subject, FormattingContext context) {
             return context.getConfiguration();
         }
     }
@@ -55,8 +51,19 @@ public class MethodAnalyzerImpl
         private static final InterpreterSelector INSTANCE = new InterpreterSelector();
         
         @Override
-        public Object select(AnalyzingContext context) {
+        public Object select(Object subject, FormattingContext context) {
             return context.getInterpreter();
+        }
+    }
+    
+    private static class ExpressionSelector
+        implements Selector {
+        
+        private static final ExpressionSelector INSTANCE = new ExpressionSelector();
+        
+        @Override
+        public Object select(Object subject, FormattingContext context) {
+            return context.getExpression();
         }
     }
     
@@ -66,8 +73,8 @@ public class MethodAnalyzerImpl
         private static final SubjectSelector INSTANCE = new SubjectSelector();
         
         @Override
-        public Object select(AnalyzingContext context) {
-            return context.getSubject();
+        public Object select(Object subject, FormattingContext context) {
+            return subject;
         }
     }
     
@@ -75,12 +82,12 @@ public class MethodAnalyzerImpl
         implements Selector {
         
         @Override
-        public Object select(AnalyzingContext context) {
+        public Object select(Object subject, FormattingContext context) {
             return type;
         }
     }
     
-    public MethodAnalyzerImpl(Type type, Object subject, Method method) {
+    public MethodFormatterImpl(Type type, Object subject, Method method) {
         Preconditions.checkNotNull(type, "Type is null!");
         Preconditions.checkNotNull(method, "Method is null!");
         
@@ -100,14 +107,15 @@ public class MethodAnalyzerImpl
             }
         }
         
-        final java.lang.reflect.Parameter[] parameters = method.getParameters();
+        final Parameter[] parameters = method.getParameters();
         this.selectors = new Selector[parameters.length];
         
         for (int i = 0; i < parameters.length; i++) {
             final Parameter parameter = parameters[i];
             
             final Class<?> parameterType = parameter.getType();
-            if (parameterType.isAnnotationPresent(Subject.class)) {
+            if (parameterType.isAnnotationPresent(Subject.class)
+                || parameterType.isAssignableFrom(type.getJavaClass())) {
                 selectors[i] = SubjectSelector.INSTANCE;
                 continue;
             }
@@ -117,32 +125,23 @@ public class MethodAnalyzerImpl
                 continue;
             }
             
-            if (!AnalyzingConfiguration.class.isAssignableFrom(type.getJavaClass()) && parameterType.isAssignableFrom(AnalyzingConfiguration.class)) {
-                selectors[i] = AnalyzingConfigurationSelector.INSTANCE;
+            if (!FormattingConfiguration.class.isAssignableFrom(type.getJavaClass()) && parameterType.isAssignableFrom(FormattingConfiguration.class)) {
+                selectors[i] = FormattingConfigurationSelector.INSTANCE;
                 continue;
             }
-            
-            if (!AnalyzingContext.class.isAssignableFrom(type.getJavaClass()) && parameterType.isAssignableFrom(AnalyzingContext.class)) {
-                selectors[i] = AnalyzingContextSelector.INSTANCE;
-                continue;
-            }
-            
+    
             if (!Type.class.isAssignableFrom(type.getJavaClass()) && parameterType.isAssignableFrom(Type.class)) {
                 selectors[i] = new TypeSelector();
                 continue;
             }
             
-            if (parameterType.isAssignableFrom(type.getJavaClass())) {
-                selectors[i] = SubjectSelector.INSTANCE;
+            if (!FormattingContext.class.isAssignableFrom(type.getJavaClass()) && parameterType.isAssignableFrom(FormattingContext.class)) {
+                selectors[i] = FormattingContextSelector.INSTANCE;
                 continue;
             }
             
             throw new IllegalArgumentException("Unexpected parameter type: " + parameterType.getName() + ", " +
-                "expected: [ Interpreter, FormattingContext, AnalyzingConfiguration, " + type.getJavaClass().getSimpleName() + " ]");
-        }
-    
-        if (!Expression.class.isAssignableFrom(method.getReturnType())) {
-            throw new IllegalArgumentException("Unexpected return type: " + method.getReturnType().getName() + ", expect " + Expression.class.getName());
+                "expected: [ Interpreter, FormattingContext, FormattingConfiguration, " + type.getJavaClass().getSimpleName() + " ]");
         }
         
         this.method = method;
@@ -151,22 +150,31 @@ public class MethodAnalyzerImpl
     }
     
     @Override
-    public Expression analyze(AnalyzingContext context) throws AnalyzingException {
-        Preconditions.checkNotNull(context, "Analyzing context are null!");
+    public String format(Object subject, FormattingContext context) throws FormattingException {
+        Preconditions.checkNotNull(subject, "Subject are null!");
+        Preconditions.checkNotNull(context, "Formatting context are null!");
         
         final Object[] objects = new Object[selectors.length];
         for (int i = 0; i < objects.length; i++) {
-            objects[i] = selectors[i].select(context);
+            objects[i] = selectors[i].select(subject, context);
         }
         
         final boolean accessible = method.isAccessible();
         try {
             method.setAccessible(true);
-            return (Expression) method.invoke(subject, objects);
+            final Object result = method.invoke(this.subject, objects);
+            if (result == null) {
+                throw new FormattingException("Formatter returns null!");
+            }
+            if (result instanceof String) {
+                return (String) result;
+            } else {
+                return result.toString();
+            }
         } catch (IllegalAccessException e) {
-            throw new AnalyzingException("Can not access java method: " + method);
+            throw new FormattingException("Can not access java method: " + method);
         } catch (InvocationTargetException e) {
-            throw new AnalyzingException("Exception thrown while analyzing " + context.getSubject(), e.getCause());
+            throw new FormattingException("Exception thrown while analyzing", e.getCause());
         } finally {
             method.setAccessible(accessible);
         }

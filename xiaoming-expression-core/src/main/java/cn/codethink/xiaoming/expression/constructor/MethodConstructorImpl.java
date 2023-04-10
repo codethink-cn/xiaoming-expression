@@ -52,8 +52,7 @@ public class MethodConstructorImpl
         this.subject = subject;
         
         for (java.lang.reflect.Parameter parameter : parameters) {
-            final JavaTypeImpl javaType = new JavaTypeImpl(parameter.getType().getSimpleName(), parameter.getType());
-            parameterList.add(new ParameterImpl(parameter.getName(), javaType));
+            parameterList.add(new ParameterImpl(parameter.getName(), parameter.getType()));
         }
     }
     
@@ -72,7 +71,7 @@ public class MethodConstructorImpl
         for (int i = 0; i < objects.length; i++) {
             final Object object = objects[i];
             if (object != null) {
-                final Class<?> parameterClass = parameters.get(i).getType().getJavaClass();
+                final Class<?> parameterClass = parameters.get(i).getJavaClass();
                 final Class<?> objectClass = object.getClass();
                 if (!parameterClass.isAssignableFrom(objectClass)) {
                     throw new IllegalArgumentException("Unexpected argument type: " + parameterClass + " (at argument " + (i + 1) + ")");

@@ -2,6 +2,7 @@ package cn.codethink.xiaoming.expression.type;
 
 import cn.codethink.xiaoming.expression.analyzer.Analyzer;
 import cn.codethink.xiaoming.expression.constructor.Constructor;
+import cn.codethink.xiaoming.expression.formatter.Formatter;
 import cn.codethink.xiaoming.expression.interpreter.Interpreter;
 
 import java.util.List;
@@ -90,6 +91,13 @@ public interface Type {
      * @return Java 类型
      */
     Class<?> getJavaClass();
+    
+    /**
+     * 获取格式化器
+     *
+     * @return 格式化器
+     */
+    Formatter getFormatter();
     
     /**
      * 判断另一类型能否赋值为当前类型

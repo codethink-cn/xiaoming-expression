@@ -8,11 +8,11 @@ package cn.codethink.xiaoming.expression.type;
 public interface Parameter {
     
     /**
-     * 获取参数类型
+     * 获取 Java 类型
      *
-     * @return 参数类型
+     * @return Java 类型
      */
-    Type getType();
+    Class<?> getJavaClass();
     
     /**
      * 获取参数名

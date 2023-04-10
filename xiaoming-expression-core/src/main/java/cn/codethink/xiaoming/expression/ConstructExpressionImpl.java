@@ -5,7 +5,6 @@ import cn.codethink.xiaoming.expression.constructor.Constructor;
 import cn.codethink.xiaoming.expression.type.Type;
 import com.google.common.base.Preconditions;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,14 +14,14 @@ public class ConstructExpressionImpl
     implements ConstructExpression {
     
     private final Constructor constructor;
-    private final List<Expression> parameterExpressions;
+    private final List<Expression> arguments;
     
-    public ConstructExpressionImpl(Constructor constructor, List<Expression> parameterExpressions) {
+    public ConstructExpressionImpl(Constructor constructor, List<Expression> arguments) {
         Preconditions.checkNotNull(constructor, "Constructor is null!");
-        Preconditions.checkNotNull(parameterExpressions, "Parameter expressions are null!");
+        Preconditions.checkNotNull(arguments, "Arguments expressions are null!");
         
         this.constructor = constructor;
-        this.parameterExpressions = parameterExpressions;
+        this.arguments = arguments;
     }
     
     @Override
@@ -31,18 +30,18 @@ public class ConstructExpressionImpl
     }
     
     @Override
-    public List<Expression> getParameterExpressions() {
-        return parameterExpressions;
+    public List<Expression> getArguments() {
+        return arguments;
     }
     
     @Override
     public Object calculate() throws CalculateException {
         try {
-            if (parameterExpressions.isEmpty()) {
+            if (arguments.isEmpty()) {
                 return constructor.construct(Collections.emptyList());
             } else {
-                final List<Object> arguments = new ArrayList<>(parameterExpressions.size());
-                for (Expression parameterExpression : parameterExpressions) {
+                final List<Object> arguments = new ArrayList<>(this.arguments.size());
+                for (Expression parameterExpression : this.arguments) {
                     final Object argument = parameterExpression.calculate();
                     arguments.add(argument);
                 }
@@ -64,11 +63,11 @@ public class ConstructExpressionImpl
         if (o == null || getClass() != o.getClass()) return false;
         ConstructExpressionImpl that = (ConstructExpressionImpl) o;
         return Objects.equals(constructor, that.constructor)
-            && Objects.equals(parameterExpressions, that.parameterExpressions);
+            && Objects.equals(arguments, that.arguments);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(constructor, parameterExpressions);
+        return Objects.hash(constructor, arguments);
     }
 }

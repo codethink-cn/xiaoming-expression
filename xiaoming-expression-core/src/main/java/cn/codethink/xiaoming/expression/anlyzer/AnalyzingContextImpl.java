@@ -14,7 +14,7 @@ public class AnalyzingContextImpl
     
     public AnalyzingContextImpl(Object subject, AnalyzingConfiguration configuration, Interpreter interpreter) {
         Preconditions.checkNotNull(subject, "Subject is null!");
-        Preconditions.checkNotNull(configuration, "Configuration is null!");
+        Preconditions.checkNotNull(configuration, "Analyzing configuration is null!");
         Preconditions.checkNotNull(interpreter, "Interpreter is null!");
         
         this.subject = subject;

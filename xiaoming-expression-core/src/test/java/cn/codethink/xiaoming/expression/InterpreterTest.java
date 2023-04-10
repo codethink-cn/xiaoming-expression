@@ -1,13 +1,17 @@
 package cn.codethink.xiaoming.expression;
 
 import cn.codethink.xiaoming.expression.analyzer.AnalyzingException;
+import cn.codethink.xiaoming.expression.annotation.Analyser;
 import cn.codethink.xiaoming.expression.annotation.Constructor;
+import cn.codethink.xiaoming.expression.annotation.Formatter;
 import cn.codethink.xiaoming.expression.annotation.Type;
 import cn.codethink.xiaoming.expression.compiler.CompilingException;
 import cn.codethink.xiaoming.expression.interpreter.ConfigurableInterpreter;
 import cn.codethink.xiaoming.expression.interpreter.Interpreter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class InterpreterTest {
     
@@ -16,6 +20,7 @@ public class InterpreterTest {
     
     @Type(Hello.class)
     private static class HelloType {
+        
         @Constructor
         public Hello construct() {
             return new Hello();
@@ -26,6 +31,31 @@ public class InterpreterTest {
             System.out.println(prompt);
             return new Hello();
         }
+        
+        @Analyser
+        public Expression analyze(Interpreter interpreter) {
+            return interpreter.compile("Hello()");
+        }
+        
+        @Formatter
+        public String format() {
+            return "Hello()";
+        }
+    }
+    
+    @ParameterizedTest
+    @CsvSource({
+        "Hello()",
+        "Hello(\"Hello World\")"
+    })
+    public void formatString(String expression) {
+        final ConfigurableInterpreter interpreter =
+            ConfigurableInterpreter.newInstance(Interpreter.getInstance());
+        interpreter.registerType(new HelloType());
+    
+        final Expression exp = interpreter.compile(expression);
+        final String format = interpreter.format(exp);
+        Assertions.assertEquals(expression, format);
     }
     
     @Test
@@ -35,8 +65,7 @@ public class InterpreterTest {
         
         interpreter.registerType(new HelloType());
     
-        final Object object = interpreter.compile("Hello(\"Hello World)").calculate();
-        Assertions.assertInstanceOf(Hello.class, object);
+        Assertions.assertThrows(CompilingException.class, () -> interpreter.compile("Hello(\"Hello World)").calculate());
     }
     
     @Test
@@ -49,13 +78,6 @@ public class InterpreterTest {
         
         Assertions.assertEquals(0x56, interpreter.compile("0x56").calculate());
         Assertions.assertEquals(0xFF, interpreter.compile("0xFF").calculate());
-    }
-    
-    @Test
-    public void compile(Object expect, String expression) throws ExpressionException {
-        final Interpreter interpreter = Interpreter.getInstance();
-        
-        Assertions.assertEquals(expect, interpreter.compile(expression).calculate());
     }
     
     @Test

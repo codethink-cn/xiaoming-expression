@@ -1,6 +1,5 @@
 package cn.codethink.xiaoming.expression;
 
-import cn.codethink.xiaoming.expression.type.NothingTypeImpl;
 import cn.codethink.xiaoming.expression.type.Type;
 import com.google.common.base.Preconditions;
 
@@ -9,7 +8,7 @@ import java.util.Objects;
 public class ConstantExpressionImpl
     implements ConstantExpression {
     
-    private static final ConstantExpressionImpl NULL = new ConstantExpressionImpl(null, NothingTypeImpl.getInstance());
+    private static final ConstantExpressionImpl NULL = new ConstantExpressionImpl(null, Type.NOTHING);
     
     public static ConstantExpression of(Object value, Type type) {
         Preconditions.checkNotNull(value, "Value is null!");

@@ -6,6 +6,8 @@ import cn.codethink.xiaoming.expression.analyzer.AnalyzingException;
 import cn.codethink.xiaoming.expression.api.APIFactory;
 import cn.codethink.xiaoming.expression.compiler.CompilingException;
 import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
+import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
+import cn.codethink.xiaoming.expression.formatter.FormattingException;
 import cn.codethink.xiaoming.expression.type.Type;
 
 import java.io.Reader;
@@ -109,4 +111,23 @@ public interface Interpreter {
      * @throws AnalyzingException 分析异常
      */
     Expression analyze(Object subject, AnalyzingConfiguration configuration) throws AnalyzingException;
+    
+    /**
+     * 格式化表达式
+     *
+     * @param expression 表达式
+     * @return 格式化后的表达式
+     * @throws FormattingException 格式化异常
+     */
+    String format(Expression expression) throws FormattingException;
+    
+    /**
+     * 格式化表达式
+     *
+     * @param expression    表达式
+     * @param configuration 格式配置
+     * @throws FormattingException 格式化异常
+     * @return 格式化后的表达式
+     */
+    String format(Expression expression, FormattingConfiguration configuration) throws FormattingException;
 }

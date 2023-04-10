@@ -3,6 +3,8 @@ package cn.codethink.xiaoming.expression.api;
 import cn.codethink.xiaoming.expression.analyzer.AnalyzingConfiguration;
 import cn.codethink.xiaoming.expression.anlyzer.AnalyzingConfigurationImpl;
 import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
+import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
+import cn.codethink.xiaoming.expression.formatter.FormattingConfigurationImpl;
 import cn.codethink.xiaoming.expression.interpreter.*;
 
 public class APIImpl
@@ -36,5 +38,15 @@ public class APIImpl
     @Override
     public CompilingConfiguration.Builder getCompileConfigurationBuilder() {
         return new CompilingConfigurationImpl.BuilderImpl();
+    }
+    
+    @Override
+    public FormattingConfiguration getFormattingConfiguration() {
+        return FormattingConfigurationImpl.getInstance();
+    }
+    
+    @Override
+    public FormattingConfiguration.Builder getFormattingConfigurationBuilder() {
+        return new FormattingConfigurationImpl.BuilderImpl();
     }
 }

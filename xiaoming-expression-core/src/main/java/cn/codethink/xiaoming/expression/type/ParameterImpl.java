@@ -6,19 +6,19 @@ public class ParameterImpl
     implements Parameter {
     
     private final String name;
-    private final Type type;
+    private final Class<?> javaClass;
     
-    public ParameterImpl(String name, Type type) {
+    public ParameterImpl(String name, Class<?> javaClass) {
         Preconditions.checkNotNull(name, "Name is null!");
-        Preconditions.checkNotNull(type, "Type is null!");
+        Preconditions.checkNotNull(javaClass, "Java class is null!");
         
         this.name = name;
-        this.type = type;
+        this.javaClass = javaClass;
     }
     
     @Override
-    public Type getType() {
-        return type;
+    public Class<?> getJavaClass() {
+        return javaClass;
     }
     
     @Override

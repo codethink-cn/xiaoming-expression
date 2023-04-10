@@ -2,6 +2,7 @@ package cn.codethink.xiaoming.expression.type;
 
 import cn.codethink.xiaoming.expression.analyzer.Analyzer;
 import cn.codethink.xiaoming.expression.constructor.Constructor;
+import cn.codethink.xiaoming.expression.formatter.Formatter;
 import com.google.common.base.Preconditions;
 
 import java.util.Collections;
@@ -15,18 +16,12 @@ public class JavaTypeImpl
     private final String name;
     private final Class<?> javaClass;
     private final Set<Constructor> constructors;
-    private Set<Analyzer> analyzers;
+    private final Set<Analyzer> analyzers;
+    private final Formatter formatter;
     
-    public JavaTypeImpl(String name, Class<?> javaClass) {
-        this(name, javaClass, Collections.emptySet(), Collections.emptySet());
-    }
-    
-    public JavaTypeImpl(Class<?> javaClass) {
-        this(javaClass.getSimpleName(), javaClass, Collections.emptySet(), Collections.emptySet());
-    }
-    
-    public JavaTypeImpl(String name, Class<?> javaClass, Set<Constructor> constructors, Set<Analyzer> analyzers) {
+    public JavaTypeImpl(String name, Class<?> javaClass, Set<Constructor> constructors, Set<Analyzer> analyzers, Formatter formatter) {
         Preconditions.checkNotNull(name, "Name is null!");
+        Preconditions.checkNotNull(formatter, "Formatter is null!");
         Preconditions.checkNotNull(analyzers, "Analysers are null!");
         Preconditions.checkArgument(!name.isEmpty(), "Name is empty!");
         Preconditions.checkNotNull(javaClass, "Java class is null!");
@@ -36,6 +31,7 @@ public class JavaTypeImpl
         this.javaClass = javaClass;
         this.constructors = Collections.unmodifiableSet(constructors);
         this.analyzers = Collections.unmodifiableSet(analyzers);
+        this.formatter = formatter;
     }
     
     @Override
@@ -55,7 +51,7 @@ public class JavaTypeImpl
     
             boolean matches = true;
             for (int i = 0; i < parameters.size(); i++) {
-                if (!parameters.get(i).getType().isAssignableFrom(types.get(i))) {
+                if (!parameters.get(i).getJavaClass().isAssignableFrom(types.get(i).getJavaClass())) {
                     matches = false;
                     break;
                 }
@@ -98,5 +94,10 @@ public class JavaTypeImpl
     @Override
     public Set<Analyzer> getAnalysers() {
         return analyzers;
+    }
+    
+    @Override
+    public Formatter getFormatter() {
+        return formatter;
     }
 }

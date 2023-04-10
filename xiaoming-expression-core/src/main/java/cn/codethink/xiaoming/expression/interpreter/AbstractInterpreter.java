@@ -7,6 +7,9 @@ import cn.codethink.xiaoming.expression.analyzer.AnalyzingException;
 import cn.codethink.xiaoming.expression.anlyzer.AnalyzingContextImpl;
 import cn.codethink.xiaoming.expression.compiler.CompilingException;
 import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
+import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
+import cn.codethink.xiaoming.expression.formatter.FormattingContextImpl;
+import cn.codethink.xiaoming.expression.formatter.FormattingException;
 import cn.codethink.xiaoming.expression.type.Type;
 import cn.codethink.xiaoming.expression.type.acl.Scanner;
 import cn.codethink.xiaoming.expression.type.acl.parser;
@@ -124,4 +127,109 @@ public abstract class AbstractInterpreter
     }
     
     protected abstract Expression analyze0(AnalyzingContext context) throws AnalyzingException;
+    
+    @Override
+    public String format(Expression expression) throws FormattingException {
+        Preconditions.checkNotNull(expression, "Expression is null!");
+        
+        return format(expression, FormattingConfiguration.getInstance());
+    }
+    
+    @Override
+    public String format(Expression expression, FormattingConfiguration configuration) throws FormattingException {
+        Preconditions.checkNotNull(expression, "Expression is null!");
+        Preconditions.checkNotNull(configuration, "Formatting configuration is null!");
+    
+        final FormattingContextImpl formattingContext = new FormattingContextImpl(expression, configuration, this);
+        if (expression instanceof ConstantExpression) {
+            final Object constant = ((ConstantExpression) expression).getConstant();
+            if (constant == null) {
+                return "null";
+            }
+            return expression.getType().getFormatter().format(constant, formattingContext);
+        }
+        if (expression instanceof ConstructExpression) {
+            final ConstructExpression constructExpression = (ConstructExpression) expression;
+    
+            final List<Expression> arguments = constructExpression.getArguments();
+            final String expressions;
+            
+            if (arguments.isEmpty()) {
+                return constructExpression.getType().getName() +
+                    (configuration.isInsertSpaceBeforeParenthesis() ? " " : "") + "(" +
+                    (configuration.isInsertSpaceAfterParenthesis() || configuration.isInsertSpaceBeforeParenthesis() ? " " : "") +
+                    (configuration.isInsertSpaceBeforeParenthesis() ? " " : "") + ")" + (configuration.isInsertSpaceAfterParenthesis() ? " " : "");
+            }
+            
+            if (arguments.size() == 1) {
+                expressions = format(arguments.get(0), configuration);
+            } else {
+                final String comma = (configuration.isInsertSpaceBeforeComma() ? " " : "") + "," + (configuration.isInsertSpaceAfterComma() ? " " : "");
+                final StringBuilder stringBuilder = new StringBuilder(format(arguments.get(0), configuration));
+                final int size = arguments.size();
+                for (int i = 1; i < size; i++) {
+                    stringBuilder.append(comma).append(format(arguments.get(i), configuration));
+                }
+                expressions = stringBuilder.toString();
+            }
+            
+            return constructExpression.getType().getName() +
+                (configuration.isInsertSpaceBeforeParenthesis() ? " " : "") + "(" + (configuration.isInsertSpaceAfterParenthesis() ? " " : "") +
+                expressions +
+                (configuration.isInsertSpaceBeforeParenthesis() ? " " : "") + ")" + (configuration.isInsertSpaceAfterParenthesis() ? " " : "");
+        }
+        if (expression instanceof ListExpression) {
+            final List<Expression> arguments = ((ListExpression) expression).getExpressions();
+            
+            if (arguments.isEmpty()) {
+                return (configuration.isInsertSpaceBeforeBrackets() ? " " : "") + "[" +
+                    (configuration.isInsertSpaceAfterBrackets() || configuration.isInsertSpaceBeforeBrackets() ? " " : "") +
+                    (configuration.isInsertSpaceBeforeBrackets() ? " " : "") + "]" + (configuration.isInsertSpaceAfterBrackets() ? " " : "");
+            }
+    
+            final String expressions;
+            if (arguments.size() == 1) {
+                expressions = format(arguments.get(0), configuration);
+            } else {
+                final String comma = (configuration.isInsertSpaceBeforeComma() ? " " : "") + "," + (configuration.isInsertSpaceAfterComma() ? " " : "");
+                final StringBuilder stringBuilder = new StringBuilder(format(arguments.get(0), configuration));
+                final int size = arguments.size();
+                for (int i = 1; i < size; i++) {
+                    stringBuilder.append(comma).append(format(arguments.get(i), configuration));
+                }
+                expressions = stringBuilder.toString();
+            }
+    
+            return (configuration.isInsertSpaceBeforeBrackets() ? " " : "") + "[" + (configuration.isInsertSpaceAfterBrackets() ? " " : "") +
+                expressions +
+                (configuration.isInsertSpaceBeforeBrackets() ? " " : "") + "]" + (configuration.isInsertSpaceAfterBrackets() ? " " : "");
+        }
+        if (expression instanceof SetExpression) {
+            final List<Expression> arguments = ((SetExpression) expression).getExpressions();
+        
+            if (arguments.isEmpty()) {
+                return (configuration.isInsertSpaceBeforeBraces() ? " " : "") + "{" +
+                    (configuration.isInsertSpaceAfterBraces() || configuration.isInsertSpaceBeforeBraces() ? " " : "") +
+                    (configuration.isInsertSpaceBeforeBraces() ? " " : "") + "}" + (configuration.isInsertSpaceAfterBraces() ? " " : "");
+            }
+        
+            final String expressions;
+            if (arguments.size() == 1) {
+                expressions = format(arguments.get(0), configuration);
+            } else {
+                final String comma = (configuration.isInsertSpaceBeforeComma() ? " " : "") + "," + (configuration.isInsertSpaceAfterComma() ? " " : "");
+                final StringBuilder stringBuilder = new StringBuilder(format(arguments.get(0), configuration));
+                final int size = arguments.size();
+                for (int i = 1; i < size; i++) {
+                    stringBuilder.append(comma).append(format(arguments.get(i), configuration));
+                }
+                expressions = stringBuilder.toString();
+            }
+        
+            return (configuration.isInsertSpaceBeforeBraces() ? " " : "") + "{" + (configuration.isInsertSpaceAfterBraces() ? " " : "") +
+                expressions +
+                (configuration.isInsertSpaceBeforeBraces() ? " " : "") + "}" + (configuration.isInsertSpaceAfterBraces() ? " " : "");
+        }
+        return null;
+    }
 }

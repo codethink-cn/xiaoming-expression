@@ -24,5 +24,5 @@ public interface ConstructExpression
      *
      * @return 参数表达式
      */
-    List<Expression> getParameterExpressions();
+    List<Expression> getArguments();
 }
