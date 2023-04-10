@@ -1,5 +1,6 @@
 package cn.codethink.xiaoming.expression.api;
 
+import cn.codethink.xiaoming.expression.interpreter.AnalyzationConfiguration;
 import cn.codethink.xiaoming.expression.interpreter.CompilationConfiguration;
 import cn.codethink.xiaoming.expression.interpreter.ConfigurableInterpreter;
 import cn.codethink.xiaoming.expression.interpreter.Interpreter;
@@ -15,6 +16,9 @@ public interface API {
     
     Interpreter getInterpreter();
     ConfigurableInterpreter getConfigurableInterpreter(Interpreter interpreter);
+    
+    AnalyzationConfiguration getAnalyzationConfiguration();
+    AnalyzationConfiguration.Builder getAnalyzationConfigurationBuilder();
     
     CompilationConfiguration getCompileConfiguration();
     CompilationConfiguration.Builder getCompileConfigurationBuilder();

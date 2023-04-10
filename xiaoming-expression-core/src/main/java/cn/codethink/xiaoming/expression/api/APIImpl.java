@@ -16,6 +16,16 @@ public class APIImpl
     }
     
     @Override
+    public AnalyzationConfiguration getAnalyzationConfiguration() {
+        return AnalyzationConfigurationImpl.getInstance();
+    }
+    
+    @Override
+    public AnalyzationConfiguration.Builder getAnalyzationConfigurationBuilder() {
+        return new AnalyzationConfigurationImpl.BuilderImpl();
+    }
+    
+    @Override
     public CompilationConfiguration getCompileConfiguration() {
         return CompilationConfigurationImpl.getInstance();
     }
