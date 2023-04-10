@@ -8,6 +8,5 @@ allprojects {
 }
 
 ext {
-    antlrVersion = '4.12.0'
     junitVersion = '5.9.2'
 }

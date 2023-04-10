@@ -4,15 +4,20 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
     api project(':xiaoming-expression-api')
 
+    implementation 'net.java.dev.javacc:javacc:5.0'
+    implementation 'com.github.vbmacher:java-cup-runtime:11b'
+
+    implementation 'com.google.guava:guava:31.1-jre'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitVersion
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitVersion
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-params:' + junitVersion
 }
 
 test {

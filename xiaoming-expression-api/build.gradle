@@ -8,6 +8,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.google.guava:guava:31.1-jre'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitVersion
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitVersion
 }
