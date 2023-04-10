@@ -1,6 +1,6 @@
 package cn.codethink.xiaoming.expression;
 
-import cn.codethink.xiaoming.expression.lang.Constructor;
+import cn.codethink.xiaoming.expression.constructor.Constructor;
 
 import java.util.List;
 

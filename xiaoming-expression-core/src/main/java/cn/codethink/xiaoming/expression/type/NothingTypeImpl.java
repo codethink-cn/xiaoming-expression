@@ -1,5 +1,7 @@
-package cn.codethink.xiaoming.expression.lang;
+package cn.codethink.xiaoming.expression.type;
 
+import cn.codethink.xiaoming.expression.analyzer.Analyzer;
+import cn.codethink.xiaoming.expression.constructor.Constructor;
 import com.google.common.base.Preconditions;
 
 import java.util.Collections;
@@ -34,6 +36,11 @@ public class NothingTypeImpl
     public Constructor getConstructorOrFail(List<Type> types) {
         Preconditions.checkNotNull(types, "Types are null!");
         throw new NoSuchElementException("No such constructor with parameters types: " + types + " in type: Nothing");
+    }
+    
+    @Override
+    public Set<Analyzer> getAnalysers() {
+        return Collections.emptySet();
     }
     
     @Override

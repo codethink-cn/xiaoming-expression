@@ -1,6 +1,6 @@
 package cn.codethink.xiaoming.expression;
 
-import cn.codethink.xiaoming.expression.lang.Type;
+import cn.codethink.xiaoming.expression.type.Type;
 
 /**
  * <h1>表达式</h1>

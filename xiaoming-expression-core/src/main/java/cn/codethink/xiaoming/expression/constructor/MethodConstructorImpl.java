@@ -1,6 +1,11 @@
-package cn.codethink.xiaoming.expression.lang;
+package cn.codethink.xiaoming.expression.constructor;
 
-import cn.codethink.xiaoming.expression.interpreter.Interpreter;
+import cn.codethink.xiaoming.expression.CalculateException;
+import cn.codethink.xiaoming.expression.constructor.Constructor;
+import cn.codethink.xiaoming.expression.type.JavaTypeImpl;
+import cn.codethink.xiaoming.expression.type.Parameter;
+import cn.codethink.xiaoming.expression.type.ParameterImpl;
+import cn.codethink.xiaoming.expression.type.Type;
 import com.google.common.base.Preconditions;
 
 import java.lang.reflect.InvocationTargetException;
@@ -47,7 +52,7 @@ public class MethodConstructorImpl
         this.subject = subject;
         
         for (java.lang.reflect.Parameter parameter : parameters) {
-            final JavaTypeImpl javaType = new JavaTypeImpl(parameter.getType().getSimpleName(), parameter.getType(), Collections.emptySet());
+            final JavaTypeImpl javaType = new JavaTypeImpl(parameter.getType().getSimpleName(), parameter.getType());
             parameterList.add(new ParameterImpl(parameter.getName(), javaType));
         }
     }
@@ -58,7 +63,7 @@ public class MethodConstructorImpl
     }
     
     @Override
-    public Object construct(List<Object> arguments) throws InvocationTargetException {
+    public Object construct(List<Object> arguments) throws ConstructingException {
         Preconditions.checkNotNull(arguments, "Arguments are null!");
         Preconditions.checkArgument(arguments.size() == parameters.size(),
             "Count of arguments not equals to count of parameters! Required " + parameters.size() + ", but got " + arguments.size());
@@ -80,7 +85,9 @@ public class MethodConstructorImpl
             method.setAccessible(true);
             return method.invoke(subject, objects);
         } catch (IllegalAccessException e) {
-            throw new InvocationTargetException(e, "Can not access java method: " + method);
+            throw new ConstructingException("Can not access java method: " + method, e);
+        } catch (InvocationTargetException e) {
+            throw new ConstructingException("Exception thrown while constructing", e.getCause());
         } finally {
             method.setAccessible(accessible);
         }

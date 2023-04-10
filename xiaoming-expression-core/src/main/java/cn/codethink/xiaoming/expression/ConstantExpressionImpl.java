@@ -1,7 +1,7 @@
 package cn.codethink.xiaoming.expression;
 
-import cn.codethink.xiaoming.expression.lang.NothingTypeImpl;
-import cn.codethink.xiaoming.expression.lang.Type;
+import cn.codethink.xiaoming.expression.type.NothingTypeImpl;
+import cn.codethink.xiaoming.expression.type.Type;
 import com.google.common.base.Preconditions;
 
 import java.util.Objects;

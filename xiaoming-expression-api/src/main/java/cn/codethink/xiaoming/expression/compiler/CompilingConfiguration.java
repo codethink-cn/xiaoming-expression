@@ -1,4 +1,4 @@
-package cn.codethink.xiaoming.expression.interpreter;
+package cn.codethink.xiaoming.expression.compiler;
 
 import cn.codethink.xiaoming.expression.api.APIFactory;
 
@@ -7,7 +7,7 @@ import cn.codethink.xiaoming.expression.api.APIFactory;
  *
  * @author Chuanwise
  */
-public interface CompilationConfiguration
+public interface CompilingConfiguration
     extends Cloneable {
     
     /**
@@ -30,7 +30,7 @@ public interface CompilationConfiguration
          *
          * @return 编译配置
          */
-        CompilationConfiguration build();
+        CompilingConfiguration build();
     }
     
     /**
@@ -47,7 +47,7 @@ public interface CompilationConfiguration
      *
      * @return 编译配置
      */
-    static CompilationConfiguration getInstance() {
+    static CompilingConfiguration getInstance() {
         return APIFactory.getInstance().getCompileConfiguration();
     }
     
@@ -63,5 +63,5 @@ public interface CompilationConfiguration
      *
      * @return 配置对象
      */
-    CompilationConfiguration clone();
+    CompilingConfiguration clone();
 }

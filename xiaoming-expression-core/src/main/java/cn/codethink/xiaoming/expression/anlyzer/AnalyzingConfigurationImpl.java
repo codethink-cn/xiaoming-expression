@@ -1,7 +1,9 @@
-package cn.codethink.xiaoming.expression.interpreter;
+package cn.codethink.xiaoming.expression.anlyzer;
 
-public class AnalyzationConfigurationImpl
-    implements AnalyzationConfiguration {
+import cn.codethink.xiaoming.expression.analyzer.AnalyzingConfiguration;
+
+public class AnalyzingConfigurationImpl
+    implements AnalyzingConfiguration {
     
     public static class BuilderImpl
         implements Builder {
@@ -15,20 +17,20 @@ public class AnalyzationConfigurationImpl
         }
     
         @Override
-        public AnalyzationConfiguration build() {
-            return new AnalyzationConfigurationImpl(flatData);
+        public AnalyzingConfiguration build() {
+            return new AnalyzingConfigurationImpl(flatData);
         }
     }
     
-    private static final AnalyzationConfiguration INSTANCE = AnalyzationConfiguration.builder().build();
+    private static final AnalyzingConfiguration INSTANCE = AnalyzingConfiguration.builder().build();
     
-    public static AnalyzationConfiguration getInstance() {
+    public static AnalyzingConfiguration getInstance() {
         return INSTANCE;
     }
     
     private final boolean flatData;
     
-    public AnalyzationConfigurationImpl(boolean flatData) {
+    public AnalyzingConfigurationImpl(boolean flatData) {
         this.flatData = flatData;
     }
     
@@ -38,9 +40,9 @@ public class AnalyzationConfigurationImpl
     }
     
     @Override
-    public AnalyzationConfiguration clone() {
+    public AnalyzingConfiguration clone() {
         try {
-            return (AnalyzationConfiguration) super.clone();
+            return (AnalyzingConfiguration) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new AssertionError(e);
         }

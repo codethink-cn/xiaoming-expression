@@ -1,5 +1,7 @@
-package cn.codethink.xiaoming.expression.lang;
+package cn.codethink.xiaoming.expression.type;
 
+import cn.codethink.xiaoming.expression.analyzer.Analyzer;
+import cn.codethink.xiaoming.expression.constructor.Constructor;
 import com.google.common.base.Preconditions;
 
 import java.util.Collections;
@@ -13,9 +15,19 @@ public class JavaTypeImpl
     private final String name;
     private final Class<?> javaClass;
     private final Set<Constructor> constructors;
+    private Set<Analyzer> analyzers;
     
-    public JavaTypeImpl(String name, Class<?> javaClass, Set<Constructor> constructors) {
+    public JavaTypeImpl(String name, Class<?> javaClass) {
+        this(name, javaClass, Collections.emptySet(), Collections.emptySet());
+    }
+    
+    public JavaTypeImpl(Class<?> javaClass) {
+        this(javaClass.getSimpleName(), javaClass, Collections.emptySet(), Collections.emptySet());
+    }
+    
+    public JavaTypeImpl(String name, Class<?> javaClass, Set<Constructor> constructors, Set<Analyzer> analyzers) {
         Preconditions.checkNotNull(name, "Name is null!");
+        Preconditions.checkNotNull(analyzers, "Analysers are null!");
         Preconditions.checkArgument(!name.isEmpty(), "Name is empty!");
         Preconditions.checkNotNull(javaClass, "Java class is null!");
         Preconditions.checkNotNull(constructors, "Constructors are null!");
@@ -23,6 +35,7 @@ public class JavaTypeImpl
         this.name = name;
         this.javaClass = javaClass;
         this.constructors = Collections.unmodifiableSet(constructors);
+        this.analyzers = Collections.unmodifiableSet(analyzers);
     }
     
     @Override
@@ -80,5 +93,10 @@ public class JavaTypeImpl
     @Override
     public String getName() {
         return name;
+    }
+    
+    @Override
+    public Set<Analyzer> getAnalysers() {
+        return analyzers;
     }
 }

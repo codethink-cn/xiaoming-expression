@@ -1,4 +1,4 @@
-package cn.codethink.xiaoming.expression.interpreter;
+package cn.codethink.xiaoming.expression.analyzer;
 
 import cn.codethink.xiaoming.expression.api.APIFactory;
 
@@ -7,7 +7,7 @@ import cn.codethink.xiaoming.expression.api.APIFactory;
  *
  * @author Chuanwise
  */
-public interface AnalyzationConfiguration
+public interface AnalyzingConfiguration
     extends Cloneable {
     
     /**
@@ -30,7 +30,7 @@ public interface AnalyzationConfiguration
          *
          * @return 分析配置
          */
-        AnalyzationConfiguration build();
+        AnalyzingConfiguration build();
     }
     
     /**
@@ -47,7 +47,7 @@ public interface AnalyzationConfiguration
      *
      * @return 分析配置
      */
-    static AnalyzationConfiguration getInstance() {
+    static AnalyzingConfiguration getInstance() {
         return APIFactory.getInstance().getAnalyzationConfiguration();
     }
     
@@ -63,5 +63,5 @@ public interface AnalyzationConfiguration
      *
      * @return 配置对象
      */
-    AnalyzationConfiguration clone();
+    AnalyzingConfiguration clone();
 }

@@ -1,4 +1,4 @@
-package cn.codethink.xiaoming.expression.lang.acl;
+package cn.codethink.xiaoming.expression.type.acl;
 
 public class JavaSymbol extends java_cup.runtime.Symbol {
   private final int line;

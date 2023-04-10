@@ -1,6 +1,5 @@
-package cn.codethink.xiaoming.expression.lang.acl;
+package cn.codethink.xiaoming.expression.type.acl;
 
-import cn.codethink.xiaoming.expression.lang.acl.JavaSymbol;
 import java_cup.runtime.*;
 
 %%

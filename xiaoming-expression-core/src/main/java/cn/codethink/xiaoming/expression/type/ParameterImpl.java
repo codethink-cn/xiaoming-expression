@@ -1,4 +1,4 @@
-package cn.codethink.xiaoming.expression.lang;
+package cn.codethink.xiaoming.expression.type;
 
 import com.google.common.base.Preconditions;
 

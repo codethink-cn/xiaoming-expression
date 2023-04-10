@@ -1,5 +1,8 @@
 package cn.codethink.xiaoming.expression.api;
 
+import cn.codethink.xiaoming.expression.analyzer.AnalyzingConfiguration;
+import cn.codethink.xiaoming.expression.anlyzer.AnalyzingConfigurationImpl;
+import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
 import cn.codethink.xiaoming.expression.interpreter.*;
 
 public class APIImpl
@@ -16,22 +19,22 @@ public class APIImpl
     }
     
     @Override
-    public AnalyzationConfiguration getAnalyzationConfiguration() {
-        return AnalyzationConfigurationImpl.getInstance();
+    public AnalyzingConfiguration getAnalyzationConfiguration() {
+        return AnalyzingConfigurationImpl.getInstance();
     }
     
     @Override
-    public AnalyzationConfiguration.Builder getAnalyzationConfigurationBuilder() {
-        return new AnalyzationConfigurationImpl.BuilderImpl();
+    public AnalyzingConfiguration.Builder getAnalyzationConfigurationBuilder() {
+        return new AnalyzingConfigurationImpl.BuilderImpl();
     }
     
     @Override
-    public CompilationConfiguration getCompileConfiguration() {
-        return CompilationConfigurationImpl.getInstance();
+    public CompilingConfiguration getCompileConfiguration() {
+        return CompilingConfigurationImpl.getInstance();
     }
     
     @Override
-    public CompilationConfiguration.Builder getCompileConfigurationBuilder() {
-        return new CompilationConfigurationImpl.BuilderImpl();
+    public CompilingConfiguration.Builder getCompileConfigurationBuilder() {
+        return new CompilingConfigurationImpl.BuilderImpl();
     }
 }

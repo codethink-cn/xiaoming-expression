@@ -1,7 +1,7 @@
 package cn.codethink.xiaoming.expression.interpreter;
 
 import cn.codethink.xiaoming.expression.api.APIFactory;
-import cn.codethink.xiaoming.expression.lang.Type;
+import cn.codethink.xiaoming.expression.type.Type;
 
 /**
  * <h1>可配置解释器</h1>

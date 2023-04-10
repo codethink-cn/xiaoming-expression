@@ -1,7 +1,8 @@
 package cn.codethink.xiaoming.expression;
 
-import cn.codethink.xiaoming.expression.lang.Constructor;
-import cn.codethink.xiaoming.expression.lang.Type;
+import cn.codethink.xiaoming.expression.constructor.ConstructingException;
+import cn.codethink.xiaoming.expression.constructor.Constructor;
+import cn.codethink.xiaoming.expression.type.Type;
 import com.google.common.base.Preconditions;
 
 import java.lang.reflect.InvocationTargetException;
@@ -47,8 +48,8 @@ public class ConstructExpressionImpl
                 }
                 return constructor.construct(arguments);
             }
-        } catch (InvocationTargetException e) {
-            throw new CalculateException("Exception thrown while constructing", e.getCause());
+        } catch (ConstructingException e) {
+            throw new CalculateException("Exception thrown while constructing", e);
         }
     }
     

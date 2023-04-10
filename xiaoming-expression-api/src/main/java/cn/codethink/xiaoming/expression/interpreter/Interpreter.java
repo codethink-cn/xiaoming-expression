@@ -1,8 +1,12 @@
 package cn.codethink.xiaoming.expression.interpreter;
 
 import cn.codethink.xiaoming.expression.Expression;
+import cn.codethink.xiaoming.expression.analyzer.AnalyzingConfiguration;
+import cn.codethink.xiaoming.expression.analyzer.AnalyzingException;
 import cn.codethink.xiaoming.expression.api.APIFactory;
-import cn.codethink.xiaoming.expression.lang.Type;
+import cn.codethink.xiaoming.expression.compiler.CompilingException;
+import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
+import cn.codethink.xiaoming.expression.type.Type;
 
 import java.io.Reader;
 
@@ -54,9 +58,9 @@ public interface Interpreter {
      *
      * @param expression 表达式
      * @return 抽象语法树
-     * @throws CompileException 编译错误
+     * @throws CompilingException 编译错误
      */
-    Expression compile(String expression) throws CompileException;
+    Expression compile(String expression) throws CompilingException;
     
     /**
      * 编译表达式为抽象语法树
@@ -64,18 +68,18 @@ public interface Interpreter {
      * @param expression    表达式
      * @param configuration 编译配置
      * @return 抽象语法树
-     * @throws CompileException 编译错误
+     * @throws CompilingException 编译错误
      */
-    Expression compile(String expression, CompilationConfiguration configuration) throws CompileException;
+    Expression compile(String expression, CompilingConfiguration configuration) throws CompilingException;
     
     /**
      * 编译表达式为抽象语法树
      *
      * @param reader 字符流
      * @return 抽象语法树
-     * @throws CompileException 编译错误
+     * @throws CompilingException 编译错误
      */
-    Expression compile(Reader reader) throws CompileException;
+    Expression compile(Reader reader) throws CompilingException;
     
     /**
      * 编译表达式为抽象语法树
@@ -83,7 +87,26 @@ public interface Interpreter {
      * @param reader        字符流
      * @param configuration 编译配置
      * @return 抽象语法树
-     * @throws CompileException 编译错误
+     * @throws CompilingException 编译错误
      */
-    Expression compile(Reader reader, CompilationConfiguration configuration) throws CompileException;
+    Expression compile(Reader reader, CompilingConfiguration configuration) throws CompilingException;
+    
+    /**
+     * 分析对象为表达式
+     *
+     * @param subject 对象
+     * @return 表达式
+     * @throws AnalyzingException 分析异常
+     */
+    Expression analyze(Object subject) throws AnalyzingException;
+    
+    /**
+     * 分析对象为表达式
+     *
+     * @param subject       对象
+     * @param configuration 分析配置
+     * @return 表达式
+     * @throws AnalyzingException 分析异常
+     */
+    Expression analyze(Object subject, AnalyzingConfiguration configuration) throws AnalyzingException;
 }

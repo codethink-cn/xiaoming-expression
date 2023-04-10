@@ -1,4 +1,7 @@
-package cn.codethink.xiaoming.expression.lang;
+package cn.codethink.xiaoming.expression.constructor;
+
+import cn.codethink.xiaoming.expression.type.Method;
+import cn.codethink.xiaoming.expression.type.Type;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -23,7 +26,7 @@ public interface Constructor
      *
      * @param arguments 参数
      * @return 对象
-     * @throws InvocationTargetException 构造过程中抛出的异常
+     * @throws ConstructingException 构造过程中抛出的异常
      */
-    Object construct(List<Object> arguments) throws InvocationTargetException;
+    Object construct(List<Object> arguments) throws ConstructingException;
 }
