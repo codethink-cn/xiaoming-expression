@@ -10,7 +10,6 @@ import cn.codethink.xiaoming.expression.analyzer.AnalyzingContext;
 import cn.codethink.xiaoming.expression.analyzer.AnalyzingException;
 import cn.codethink.xiaoming.expression.anlyzer.AnalyzingContextImpl;
 import cn.codethink.xiaoming.expression.annotation.Analyser;
-import cn.codethink.xiaoming.expression.annotation.Formatter;
 import cn.codethink.xiaoming.expression.type.Type;
 import cn.codethink.xiaoming.expression.util.Types;
 
@@ -29,11 +28,6 @@ public class RootInterpreterImpl
     
     @cn.codethink.xiaoming.expression.annotation.Type(value = Integer.class, name = "Int")
     private static class IntType {
-        @Formatter
-        public String format(Integer value) {
-            return value.toString();
-        }
-        
         @Analyser
         public Expression analyze(Integer value, Type type) {
             return ConstantExpressionImpl.of(value, type);
@@ -42,11 +36,6 @@ public class RootInterpreterImpl
     
     @cn.codethink.xiaoming.expression.annotation.Type(value = Double.class, name = "Double")
     private static class DoubleType {
-        @Formatter
-        public String format(Double value) {
-            return value.toString();
-        }
-    
         @Analyser
         public Expression analyze(Double value, Type type) {
             return ConstantExpressionImpl.of(value, type);
@@ -55,11 +44,6 @@ public class RootInterpreterImpl
     
     @cn.codethink.xiaoming.expression.annotation.Type(value = Boolean.class, name = "Bool")
     private static class BoolType {
-        @Formatter
-        public String format(Boolean value) {
-            return value.toString();
-        }
-    
         @Analyser
         public Expression analyze(Boolean value, Type type) {
             return ConstantExpressionImpl.of(value, type);
@@ -68,30 +52,6 @@ public class RootInterpreterImpl
     
     @cn.codethink.xiaoming.expression.annotation.Type(value = Character.class, name = "Char")
     private static class CharType {
-        @Formatter
-        public String format(Character value) {
-            switch (value) {
-                case '\b':
-                    return "'\\b'";
-                case '\t':
-                    return "'\\t'";
-                case '\n':
-                    return "'\\n'";
-                case '\f':
-                    return "'\\f'";
-                case '\r':
-                    return "'\\r'";
-                case '\"':
-                    return "'\\\"'";
-                case '\\':
-                    return "'\\\\'";
-                case '\'':
-                    return "'\\''";
-                default:
-                    return "'" + value + "'";
-            }
-        }
-        
         @Analyser
         public Expression analyze(Character value, Type type) {
             return ConstantExpressionImpl.of(value, type);
@@ -100,43 +60,6 @@ public class RootInterpreterImpl
     
     @cn.codethink.xiaoming.expression.annotation.Type(value = String.class, name = "String")
     private static class StringType {
-        @Formatter
-        public String format(String value) {
-            final int length = value.length();
-            final StringBuilder stringBuilder = new StringBuilder(length);
-            for (int i = 0; i < length; i++) {
-                final char ch = value.charAt(i);
-                switch (ch) {
-                    case '\b':
-                        stringBuilder.append("\\b");
-                        break;
-                    case '\t':
-                        stringBuilder.append("\\t");
-                        break;
-                    case '\n':
-                        stringBuilder.append("\\n");
-                        break;
-                    case '\f':
-                        stringBuilder.append("\\f");
-                        break;
-                    case '\r':
-                        stringBuilder.append("\\r");
-                        break;
-                    case '\"':
-                        stringBuilder.append("\\\"");
-                        break;
-                    case '\\':
-                        stringBuilder.append("\\\\");
-                        break;
-                    case '\'':
-                        stringBuilder.append("\\'");
-                    default:
-                        stringBuilder.append(ch);
-                }
-            }
-            return "\"" + stringBuilder + "\"";
-        }
-        
         @Analyser
         public Expression analyze(String value, Type type) {
             return ConstantExpressionImpl.of(value, type);
@@ -145,11 +68,6 @@ public class RootInterpreterImpl
     
     @cn.codethink.xiaoming.expression.annotation.Type(value = void.class, name = "Nothing")
     private static class NothingType {
-        @Formatter
-        public String format() {
-            return "null";
-        }
-        
         @Analyser
         public Expression analyze() {
             return ConstantExpressionImpl.ofNull();
@@ -158,11 +76,6 @@ public class RootInterpreterImpl
     
     @cn.codethink.xiaoming.expression.annotation.Type(value = List.class, name = "List")
     private static class ListType {
-        @Formatter
-        public String format() {
-            throw new UnsupportedOperationException();
-        }
-        
         @Analyser
         public Expression analyze(List<?> list, AnalyzingConfiguration configuration, Interpreter interpreter) {
             if (list.isEmpty()) {
@@ -179,11 +92,6 @@ public class RootInterpreterImpl
     
     @cn.codethink.xiaoming.expression.annotation.Type(value = Set.class, name = "Set")
     private static class SetType {
-        @Formatter
-        public String format() {
-            throw new UnsupportedOperationException();
-        }
-        
         @Analyser
         public Expression analyze(Set<?> set, AnalyzingConfiguration configuration, Interpreter interpreter) {
             if (set.isEmpty()) {

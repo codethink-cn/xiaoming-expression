@@ -9,6 +9,8 @@ import java.util.List;
 /**
  * <h1>构造函数</h1>
  *
+ * <p>构造函数是构造得到对象实例的方式。但小明表达式不要求每次构造都返回新的实例。</p>
+ *
  * @author Chuanwise
  */
 public interface Constructor

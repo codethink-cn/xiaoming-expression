@@ -146,7 +146,76 @@ public abstract class AbstractInterpreter
             if (constant == null) {
                 return "null";
             }
-            return expression.getType().getFormatter().format(constant, formattingContext);
+            
+            if (constant instanceof Integer) {
+                return constant.toString();
+            }
+            if (constant instanceof Double) {
+                return constant.toString();
+            }
+            if (constant instanceof Boolean) {
+                return constant.toString();
+            }
+            if (constant instanceof Character) {
+                switch ((Character) constant) {
+                    case '\b':
+                        return "'\\b'";
+                    case '\t':
+                        return "'\\t'";
+                    case '\n':
+                        return "'\\n'";
+                    case '\f':
+                        return "'\\f'";
+                    case '\r':
+                        return "'\\r'";
+                    case '\"':
+                        return "'\\\"'";
+                    case '\\':
+                        return "'\\\\'";
+                    case '\'':
+                        return "'\\''";
+                    default:
+                        return "'" + constant + "'";
+                }
+            }
+            if (constant instanceof String) {
+                final String value = (String) constant;
+                final int length = value.length();
+                final StringBuilder stringBuilder = new StringBuilder(length);
+                for (int i = 0; i < length; i++) {
+                    final char ch = value.charAt(i);
+                    switch (ch) {
+                        case '\b':
+                            stringBuilder.append("\\b");
+                            break;
+                        case '\t':
+                            stringBuilder.append("\\t");
+                            break;
+                        case '\n':
+                            stringBuilder.append("\\n");
+                            break;
+                        case '\f':
+                            stringBuilder.append("\\f");
+                            break;
+                        case '\r':
+                            stringBuilder.append("\\r");
+                            break;
+                        case '\"':
+                            stringBuilder.append("\\\"");
+                            break;
+                        case '\\':
+                            stringBuilder.append("\\\\");
+                            break;
+                        case '\'':
+                            stringBuilder.append("\\'");
+                        default:
+                            stringBuilder.append(ch);
+                    }
+                }
+                return "\"" + stringBuilder + "\"";
+            }
+            
+            throw new IllegalArgumentException("Unexpected value in ConstantExpression: " + constant);
         }
         if (expression instanceof ConstructExpression) {
             final ConstructExpression constructExpression = (ConstructExpression) expression;
@@ -230,6 +299,7 @@ public abstract class AbstractInterpreter
                 expressions +
                 (configuration.isInsertSpaceBeforeBraces() ? " " : "") + "}" + (configuration.isInsertSpaceAfterBraces() ? " " : "");
         }
+        
         return null;
     }
 }

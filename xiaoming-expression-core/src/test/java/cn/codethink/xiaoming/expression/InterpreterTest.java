@@ -3,7 +3,6 @@ package cn.codethink.xiaoming.expression;
 import cn.codethink.xiaoming.expression.analyzer.AnalyzingException;
 import cn.codethink.xiaoming.expression.annotation.Analyser;
 import cn.codethink.xiaoming.expression.annotation.Constructor;
-import cn.codethink.xiaoming.expression.annotation.Formatter;
 import cn.codethink.xiaoming.expression.annotation.Type;
 import cn.codethink.xiaoming.expression.compiler.CompilingException;
 import cn.codethink.xiaoming.expression.interpreter.ConfigurableInterpreter;
@@ -37,7 +36,6 @@ public class InterpreterTest {
             return interpreter.compile("Hello()");
         }
         
-        @Formatter
         public String format() {
             return "Hello()";
         }
