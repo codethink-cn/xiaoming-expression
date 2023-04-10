@@ -15,7 +15,6 @@ import java_cup.runtime.*;
 %column
 
 %cup
-%cupdebug
 
 %{
   StringBuilder string = new StringBuilder();

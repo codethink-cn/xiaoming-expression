@@ -15,12 +15,19 @@ parser code {:
     this.configuration = configuration;
   }
 
+  @Override
   public void report_error(String message, Object info) {
     if (configuration.isStrict()) {
       report_fatal_error(message, info);
     }
   }
-   
+
+  @Override
+  public void syntax_error(Symbol cur_token) {
+    this.report_error("Syntax error", cur_token);
+  }
+
+  @Override
   public void report_fatal_error(String message, Object info) {
     if (info instanceof JavaSymbol) {
       final JavaSymbol symbol = (JavaSymbol) info;
