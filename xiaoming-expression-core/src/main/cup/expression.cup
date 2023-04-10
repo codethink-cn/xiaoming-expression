@@ -1,0 +1,94 @@
+package cn.codethink.xiaoming.expression.lang.acl;
+
+import cn.codethink.xiaoming.expression.*;
+import cn.codethink.xiaoming.expression.interpreter.*;
+import java_cup.runtime.*;
+import java.util.*;
+import java.util.stream.Collectors;
+
+parser code {:
+  Interpreter interpreter;
+  CompileConfiguration configuration;
+
+  public void initialize(Interpreter interpreter, CompileConfiguration configuration) {
+    this.interpreter = interpreter;
+    this.configuration = configuration;
+  }
+
+  public void report_error(String message, Object info) {
+    if (configuration.isStrict()) {
+      report_fatal_error(message, info);
+    }
+  }
+   
+  public void report_fatal_error(String message, Object info) {
+    if (info instanceof JavaSymbol) {
+      final JavaSymbol symbol = (JavaSymbol) info;
+      throw new RuntimeException(message + " (at line " + symbol.getLine() + ", column " + symbol.getColumn() + ")");
+    } else {
+      throw new RuntimeException(message);
+    }
+  }
+:};
+
+terminal LPAREN;
+terminal RPAREN;
+terminal LBRACE;
+terminal RBRACE;
+terminal LBRACK;
+terminal RBRACK;
+terminal COMMA;
+
+terminal java.lang.String IDENTIFIER;
+
+// literals
+terminal java.lang.Number INTEGER_LITERAL;
+terminal java.lang.Number FLOATING_POINT_LITERAL;
+terminal java.lang.Boolean BOOLEAN_LITERAL;
+terminal java.lang.Character CHARACTER_LITERAL;
+terminal java.lang.String STRING_LITERAL;
+terminal NULL_LITERAL;
+
+non terminal cn.codethink.xiaoming.expression.Expression literal, expression, primary_no_new_collection, collection_creation_expression, method_invocation;
+non terminal cn.codethink.xiaoming.expression.lang.Type type;
+non terminal java.util.List argument_list, argument_list_opt;
+
+start with expression;
+
+// literal
+literal ::=
+    INTEGER_LITERAL:l                           {: RESULT = ConstantExpressionImpl.of(l, interpreter.getTypeOrFail("Int")); :}
+	|	FLOATING_POINT_LITERAL:l                    {: RESULT = ConstantExpressionImpl.of(l, interpreter.getTypeOrFail("Double")); :}
+	|	BOOLEAN_LITERAL:l                           {: RESULT = ConstantExpressionImpl.of(l, interpreter.getTypeOrFail("Bool")); :}
+	|	CHARACTER_LITERAL:l                         {: RESULT = ConstantExpressionImpl.of(l, interpreter.getTypeOrFail("Char")); :}
+	|	STRING_LITERAL:l                            {: RESULT = ConstantExpressionImpl.of(l, interpreter.getTypeOrFail("String")); :}
+	|	NULL_LITERAL                                {: RESULT = ConstantExpressionImpl.ofNull(); :}
+	;
+
+type ::=
+		IDENTIFIER:i                                {: RESULT = interpreter.getTypeOrFail(i); :}
+	;
+
+expression ::=	primary_no_new_collection:i     {: RESULT = i; :}
+	|	collection_creation_expression:i            {: RESULT = i; :}
+	;
+
+primary_no_new_collection ::=
+		literal:i                                   {: RESULT = i; :}
+	|	LPAREN expression:e RPAREN                  {: RESULT = e; :}
+	|	method_invocation:i                         {: RESULT = i; :}
+	;
+method_invocation ::=
+    type:t LPAREN argument_list_opt:l RPAREN    {: RESULT = new ConstructExpressionImpl(t.getConstructorOrFail(((List<Expression>) l).stream().map(Expression::getType).collect(Collectors.toList())), l); :}
+  ;
+argument_list_opt ::=                           {: RESULT = Collections.emptyList(); :}
+	|	argument_list   :i                          {: RESULT = i; :}
+	;
+argument_list ::=
+		expression:e                                {: RESULT = new ArrayList<>(); RESULT.add(e); :}
+	|	argument_list:l COMMA expression:e          {: RESULT = l; l.add(e); :}
+	;
+collection_creation_expression ::=
+    LBRACE argument_list_opt:l RBRACE           {: RESULT = new SetExpressionImpl(l, interpreter.getTypeOrFail("Set")); :}
+  | LBRACK argument_list_opt:l RBRACK           {: RESULT = new ListExpressionImpl(l, interpreter.getTypeOrFail("List")); :}
+	;
