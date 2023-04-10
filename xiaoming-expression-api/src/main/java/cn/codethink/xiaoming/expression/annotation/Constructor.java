@@ -1,4 +1,4 @@
-package cn.codethink.xiaoming.expression.annotations;
+package cn.codethink.xiaoming.expression.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
