@@ -25,7 +25,6 @@ public interface CompilationConfiguration
          */
         Builder strict(boolean strict);
     
-    
         /**
          * 构造编译配置
          *
