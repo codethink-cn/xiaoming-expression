@@ -3,7 +3,7 @@
 [![Latest release](https://img.shields.io/github/release/codethink-cn/xiaoming-expression.svg)](https://github.com/codethink-cn/xiaoming-expression/releases/latest)
 [![Build by Gradle](https://img.shields.io/badge/Build%20by-Gradle-06A0CE?logo=Gradle&labelColor=02303A)](https://gradle.org/?from=xiaoming-expression)
 
-小明表达式是用于在小明消息码中内插的表达式。
+小明表达式是用于在小明消息码中内插的表达式，语法简单，支持整数、浮点数、布尔值、字符、文本、列表和集合字面量。
 
 ## 许可
 
