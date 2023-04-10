@@ -521,5 +521,4 @@ public class parser extends java_cup.runtime.lr_parser {
                 CUP$parser$top);
         }
     }
-    
 }
