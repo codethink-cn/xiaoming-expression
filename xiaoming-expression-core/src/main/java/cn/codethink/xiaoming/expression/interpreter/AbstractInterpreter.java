@@ -1,7 +1,6 @@
 package cn.codethink.xiaoming.expression.interpreter;
 
 import cn.codethink.xiaoming.expression.Expression;
-import cn.codethink.xiaoming.expression.lang.JavaTypeImpl;
 import cn.codethink.xiaoming.expression.lang.Type;
 import cn.codethink.xiaoming.expression.lang.acl.Scanner;
 import cn.codethink.xiaoming.expression.lang.acl.parser;
@@ -9,67 +8,39 @@ import com.google.common.base.Preconditions;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Collections;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class InterpreterImpl
+public abstract class AbstractInterpreter
     implements Interpreter {
     
-    private static InterpreterImpl INSTANCE = new InterpreterImpl(null);
-    static {
-        // Original types
-        final Type intType = new JavaTypeImpl("Int", Integer.class, Collections.emptySet());
-        final Type doubleType = new JavaTypeImpl("Double", Double.class, Collections.emptySet());
-        final Type charType = new JavaTypeImpl("Char", Character.class, Collections.emptySet());
-        final Type stringType = new JavaTypeImpl("String", String.class, Collections.emptySet());
-        final Type nothingType = new JavaTypeImpl("Nothing", Void.class, Collections.emptySet());
-        
-        INSTANCE.registerType(intType);
-        INSTANCE.registerType(doubleType);
-        INSTANCE.registerType(charType);
-        INSTANCE.registerType(stringType);
-        INSTANCE.registerType(nothingType);
-    }
+    protected final Interpreter parent;
     
-    private final Interpreter parent;
-    
-    private final Map<String, Type> types = new ConcurrentHashMap<>();
-    
-    private InterpreterImpl(Interpreter parent) {
+    protected AbstractInterpreter(Interpreter parent) {
         this.parent = parent;
     }
     
-    public static InterpreterImpl newInstance(Interpreter parent) {
-        Preconditions.checkNotNull(parent, "Parent interpreter is null!");
-        return new InterpreterImpl(parent);
-    }
-    
-    public static InterpreterImpl getInstance() {
-        return INSTANCE;
-    }
-    
     @Override
-    public Interpreter getParentInterpreter() {
+    public Interpreter getParent() {
         return parent;
     }
     
     @Override
-    public Type getType(String name) {
+    public final Type getType(String name) {
         Preconditions.checkNotNull(name, "Name is null!");
         Preconditions.checkArgument(!name.isEmpty(), "Name is empty!");
     
         if (parent == null) {
-            return types.get(name);
+            return getType0(name);
         } else {
             Type type = parent.getType(name);
             if (type == null) {
-                type = types.get(name);
+                type = getType0(name);
             }
             return type;
         }
     }
+    
+    protected abstract Type getType0(String name);
     
     @Override
     public Type getTypeOrFail(String name) {
@@ -81,17 +52,6 @@ public class InterpreterImpl
             throw new NoSuchElementException("No such type: " + name);
         }
         return type;
-    }
-    
-    @Override
-    public void registerType(Type type) {
-        Preconditions.checkNotNull(type, "Type is null!");
-    
-        final Type sameNameType = getType(type.getName());
-        if (sameNameType != null) {
-            throw new IllegalArgumentException("Type " + type.getName() + " already exists!");
-        }
-        types.put(type.getName(), type);
     }
     
     @Override
@@ -112,7 +72,6 @@ public class InterpreterImpl
     }
     
     @Override
-    @SuppressWarnings("all")
     public Expression compile(Reader reader) throws CompileException {
         Preconditions.checkNotNull(reader, "Reader is null!");
     
@@ -120,6 +79,7 @@ public class InterpreterImpl
     }
     
     @Override
+    @SuppressWarnings("all")
     public Expression compile(Reader reader, CompilationConfiguration configuration) throws CompileException {
         Preconditions.checkNotNull(reader, "Reader is null!");
         Preconditions.checkNotNull(configuration, "Configuration is null!");

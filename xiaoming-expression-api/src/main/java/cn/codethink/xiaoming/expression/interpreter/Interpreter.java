@@ -31,7 +31,7 @@ public interface Interpreter {
      *
      * @return 父解释器或 null
      */
-    Interpreter getParentInterpreter();
+    Interpreter getParent();
     
     /**
      * 获取类型
@@ -86,11 +86,4 @@ public interface Interpreter {
      * @throws CompileException 编译错误
      */
     Expression compile(Reader reader, CompilationConfiguration configuration) throws CompileException;
-    
-    /**
-     * 注册类型
-     *
-     * @param type 类型
-     */
-    void registerType(Type type);
 }

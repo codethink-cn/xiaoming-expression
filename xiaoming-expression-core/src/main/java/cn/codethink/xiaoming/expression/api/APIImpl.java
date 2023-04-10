@@ -1,16 +1,18 @@
 package cn.codethink.xiaoming.expression.api;
 
-import cn.codethink.xiaoming.expression.interpreter.CompilationConfiguration;
-import cn.codethink.xiaoming.expression.interpreter.CompilationConfigurationImpl;
-import cn.codethink.xiaoming.expression.interpreter.Interpreter;
-import cn.codethink.xiaoming.expression.interpreter.InterpreterImpl;
+import cn.codethink.xiaoming.expression.interpreter.*;
 
 public class APIImpl
     implements API {
     
     @Override
     public Interpreter getInterpreter() {
-        return InterpreterImpl.getInstance();
+        return RootInterpreterImpl.getInstance();
+    }
+    
+    @Override
+    public ConfigurableInterpreter getConfigurableInterpreter(Interpreter interpreter) {
+        return new ConfigurableInterpreterImpl(interpreter);
     }
     
     @Override
