@@ -7,7 +7,17 @@ package cn.codethink.xiaoming.expression.lang;
  */
 public interface Parameter {
     
+    /**
+     * 获取参数类型
+     *
+     * @return 参数类型
+     */
     Type getType();
     
-    
+    /**
+     * 获取参数名
+     *
+     * @return 参数名
+     */
+    String getName();
 }
