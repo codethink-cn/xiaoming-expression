@@ -1,6 +1,7 @@
 package cn.codethink.xiaoming.expression.util;
 
 import cn.codethink.xiaoming.expression.analyzer.Analyzer;
+import cn.codethink.xiaoming.expression.anlyzer.DefaultAnalyzerImpl;
 import cn.codethink.xiaoming.expression.anlyzer.MethodAnalyzerImpl;
 import cn.codethink.xiaoming.expression.constructor.Constructor;
 import cn.codethink.xiaoming.expression.constructor.MethodConstructorImpl;
@@ -10,6 +11,7 @@ import cn.codethink.xiaoming.expression.type.JavaTypeImpl;
 import cn.codethink.xiaoming.expression.type.Type;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,6 +58,12 @@ public class Types {
             }
         }
         
+        // 如果包含无参构造，则生成默认分析方法
+        final Constructor defaultConstructor = type.getConstructor(Collections.emptyList());
+        if (defaultConstructor != null && analyzers.isEmpty()) {
+            analyzers.add(new DefaultAnalyzerImpl(defaultConstructor));
+        }
+    
         return type;
     }
 }
