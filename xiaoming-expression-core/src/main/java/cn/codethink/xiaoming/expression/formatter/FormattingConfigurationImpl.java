@@ -6,70 +6,158 @@ public class FormattingConfigurationImpl
     public static class BuilderImpl
         implements Builder {
     
-        private boolean insertSpaceAfterParenthesis = false;
-        private boolean insertSpaceBeforeParenthesis = false;
-        private boolean insertSpaceAfterBrackets = false;
-        private boolean insertSpaceBeforeBrackets = false;
-        private boolean insertSpaceAfterBraces = false;
-        private boolean insertSpaceBeforeBraces = false;
-        private boolean insertSpaceAfterComma = true;
-        private boolean insertSpaceBeforeComma = false;
+        private boolean minimizeSpaces = true;
+        
+        private int countOfSpacesBeforeLeftParenthesis = 0;
+        private int countOfSpacesAfterLeftParenthesis = 1;
+        private int countOfSpacesBeforeRightParenthesis = 1;
+        private int countOfSpacesAfterRightParenthesis = 0;
+        private int countOfSpacesInEmptyParenthesis = 1;
+        
+        private int countOfSpacesBeforeLeftBrackets = 0;
+        private int countOfSpacesAfterLeftBrackets = 1;
+        private int countOfSpacesBeforeRightBrackets = 1;
+        private int countOfSpacesAfterRightBrackets = 0;
+        private int countOfSpacesInEmptyBrackets = 1;
+        
+        private int countOfSpacesBeforeLeftBraces = 0;
+        private int countOfSpacesAfterLeftBraces = 1;
+        private int countOfSpacesBeforeRightBraces = 1;
+        private int countOfSpacesAfterRightBraces = 0;
+        private int countOfSpacesInEmptyBraces = 1;
+        
+        private int countOfSpacesAfterComma = 1;
+        private int countOfSpacesBeforeComma = 0;
         
         @Override
-        public Builder insertSpaceAfterComma(boolean insertSpaceAfterComma) {
-            this.insertSpaceAfterComma = insertSpaceAfterComma;
+        public Builder minimizeSpaces(boolean minimizeSpaces) {
+            this.minimizeSpaces = minimizeSpaces;
             return this;
         }
     
         @Override
-        public Builder insertSpaceBeforeComma(boolean insertSpaceBeforeComma) {
-            this.insertSpaceBeforeComma = insertSpaceBeforeComma;
+        public Builder countOfSpacesBeforeLeftParenthesis(int countOfSpacesBeforeLeftParenthesis) {
+            this.countOfSpacesBeforeLeftParenthesis = countOfSpacesBeforeLeftParenthesis;
             return this;
         }
     
         @Override
-        public Builder insertSpaceBeforeParenthesis(boolean insertSpaceBeforeParenthesis) {
-            this.insertSpaceBeforeParenthesis = insertSpaceBeforeParenthesis;
+        public Builder countOfSpacesAfterLeftParenthesis(int countOfSpacesAfterLeftParenthesis) {
+            this.countOfSpacesAfterLeftParenthesis = countOfSpacesAfterLeftParenthesis;
             return this;
         }
     
         @Override
-        public Builder insertSpaceAfterParenthesis(boolean insertSpaceAfterParenthesis) {
-            this.insertSpaceAfterParenthesis = insertSpaceAfterParenthesis;
+        public Builder countOfSpacesBeforeRightParenthesis(int countOfSpacesBeforeRightParenthesis) {
+            this.countOfSpacesBeforeRightParenthesis = countOfSpacesBeforeRightParenthesis;
             return this;
         }
     
         @Override
-        public Builder insertSpaceBeforeBrackets(boolean insertSpaceBeforeBrackets) {
-            this.insertSpaceBeforeBrackets = insertSpaceBeforeBrackets;
+        public Builder countOfSpacesAfterRightParenthesis(int countOfSpacesAfterRightParenthesis) {
+            this.countOfSpacesAfterRightParenthesis = countOfSpacesAfterRightParenthesis;
             return this;
         }
     
         @Override
-        public Builder insertSpaceAfterBrackets(boolean insertSpaceAfterBrackets) {
-            this.insertSpaceAfterBrackets = insertSpaceAfterBrackets;
+        public Builder countOfSpacesInEmptyParenthesis(int countOfSpacesInEmptyParenthesis) {
+            this.countOfSpacesInEmptyParenthesis = countOfSpacesInEmptyParenthesis;
             return this;
         }
     
         @Override
-        public Builder insertSpaceBeforeBraces(boolean insertSpaceBeforeBraces) {
-            this.insertSpaceBeforeBraces = insertSpaceBeforeBraces;
+        public Builder countOfSpacesBeforeLeftBrackets(int countOfSpacesBeforeLeftBrackets) {
+            this.countOfSpacesBeforeLeftBrackets = countOfSpacesBeforeLeftBrackets;
             return this;
         }
     
         @Override
-        public Builder insertSpaceAfterBraces(boolean insertSpaceAfterBraces) {
-            this.insertSpaceAfterBraces = insertSpaceAfterBraces;
+        public Builder countOfSpacesAfterLeftBrackets(int countOfSpacesAfterLeftBrackets) {
+            this.countOfSpacesAfterLeftBrackets = countOfSpacesAfterLeftBrackets;
+            return this;
+        }
+    
+        @Override
+        public Builder countOfSpacesBeforeRightBrackets(int countOfSpacesBeforeRightBrackets) {
+            this.countOfSpacesBeforeRightBrackets = countOfSpacesBeforeRightBrackets;
+            return this;
+        }
+    
+        @Override
+        public Builder countOfSpacesAfterRightBrackets(int countOfSpacesAfterRightBrackets) {
+            this.countOfSpacesAfterRightBrackets = countOfSpacesAfterRightBrackets;
+            return this;
+        }
+    
+        @Override
+        public Builder countOfSpacesInEmptyBrackets(int countOfSpacesInEmptyBrackets) {
+            this.countOfSpacesInEmptyBrackets = countOfSpacesInEmptyBrackets;
+            return this;
+        }
+    
+        @Override
+        public Builder countOfSpacesBeforeLeftBraces(int countOfSpacesBeforeLeftBraces) {
+            this.countOfSpacesBeforeLeftBraces = countOfSpacesBeforeLeftBraces;
+            return this;
+        }
+    
+        @Override
+        public Builder countOfSpacesAfterLeftBraces(int countOfSpacesAfterLeftBraces) {
+            this.countOfSpacesAfterLeftBraces = countOfSpacesAfterLeftBraces;
+            return this;
+        }
+    
+        @Override
+        public Builder countOfSpacesBeforeRightBraces(int countOfSpacesBeforeRightBraces) {
+            this.countOfSpacesBeforeRightBraces = countOfSpacesBeforeRightBraces;
+            return this;
+        }
+    
+        @Override
+        public Builder countOfSpacesAfterRightBraces(int countOfSpacesAfterRightBraces) {
+            this.countOfSpacesAfterRightBraces = countOfSpacesAfterRightBraces;
+            return this;
+        }
+    
+        @Override
+        public Builder countOfSpacesInEmptyBraces(int countOfSpacesInEmptyBraces) {
+            this.countOfSpacesInEmptyBraces = countOfSpacesInEmptyBraces;
+            return this;
+        }
+    
+        @Override
+        public Builder countOfSpacesBeforeComma(int countOfSpacesBeforeComma) {
+            this.countOfSpacesBeforeComma = countOfSpacesBeforeComma;
+            return this;
+        }
+    
+        @Override
+        public Builder countOfSpacesAfterComma(int countOfSpacesAfterComma) {
+            this.countOfSpacesAfterComma = countOfSpacesAfterComma;
             return this;
         }
     
         @Override
         public FormattingConfiguration build() {
             return new FormattingConfigurationImpl(
-                insertSpaceAfterComma, insertSpaceBeforeComma,
-                insertSpaceAfterParenthesis, insertSpaceBeforeParenthesis,
-                insertSpaceAfterBrackets, insertSpaceBeforeBrackets,
-                insertSpaceAfterBraces, insertSpaceBeforeBraces
+                minimizeSpaces,
+                countOfSpacesBeforeLeftParenthesis,
+                countOfSpacesAfterLeftParenthesis,
+                countOfSpacesBeforeRightParenthesis,
+                countOfSpacesAfterRightParenthesis,
+                countOfSpacesInEmptyParenthesis,
+                countOfSpacesBeforeLeftBrackets,
+                countOfSpacesAfterLeftBrackets,
+                countOfSpacesBeforeRightBrackets,
+                countOfSpacesAfterRightBrackets,
+                countOfSpacesInEmptyBrackets,
+                countOfSpacesBeforeLeftBraces,
+                countOfSpacesAfterLeftBraces,
+                countOfSpacesBeforeRightBraces,
+                countOfSpacesAfterRightBraces,
+                countOfSpacesInEmptyBraces,
+                countOfSpacesBeforeComma,
+                countOfSpacesAfterComma
             );
         }
     }
@@ -80,76 +168,155 @@ public class FormattingConfigurationImpl
         return INSTANCE;
     }
     
-    private final boolean insertSpaceAfterComma;
-    private final boolean insertSpaceBeforeComma;
-    private final boolean insertSpaceAfterParenthesis;
-    private final boolean insertSpaceBeforeParenthesis;
-    private final boolean insertSpaceAfterBrackets;
-    private final boolean insertSpaceBeforeBrackets;
-    private final boolean insertSpaceAfterBraces;
-    private final boolean insertSpaceBeforeBraces;
+    private final boolean minimizeSpaces;
     
-    public FormattingConfigurationImpl(boolean insertSpaceAfterComma, boolean insertSpaceBeforeComma,
-                                       boolean insertSpaceAfterParenthesis, boolean insertSpaceBeforeParenthesis,
-                                       boolean insertSpaceAfterBrackets, boolean insertSpaceBeforeBrackets,
-                                       boolean insertSpaceAfterBraces, boolean insertSpaceBeforeBraces) {
+    private final int countOfSpacesBeforeLeftParenthesis;
+    private final int countOfSpacesAfterLeftParenthesis;
+    private final int countOfSpacesBeforeRightParenthesis;
+    private final int countOfSpacesAfterRightParenthesis;
+    private final int countOfSpacesInEmptyParenthesis;
+    
+    private final int countOfSpacesBeforeLeftBrackets;
+    private final int countOfSpacesAfterLeftBrackets;
+    private final int countOfSpacesBeforeRightBrackets;
+    private final int countOfSpacesAfterRightBrackets;
+    private final int countOfSpacesInEmptyBrackets;
+    
+    private final int countOfSpacesBeforeLeftBraces;
+    private final int countOfSpacesAfterLeftBraces;
+    private final int countOfSpacesBeforeRightBraces;
+    private final int countOfSpacesAfterRightBraces;
+    private final int countOfSpacesInEmptyBraces;
+    
+    private final int countOfSpacesAfterComma;
+    private final int countOfSpacesBeforeComma;
+    
+    public FormattingConfigurationImpl(boolean minimizeSpaces,
+                                       int countOfSpacesBeforeLeftParenthesis,
+                                       int countOfSpacesAfterLeftParenthesis,
+                                       int countOfSpacesBeforeRightParenthesis,
+                                       int countOfSpacesAfterRightParenthesis,
+                                       int countOfSpacesInEmptyParenthesis,
+                                       int countOfSpacesBeforeLeftBrackets,
+                                       int countOfSpacesAfterLeftBrackets,
+                                       int countOfSpacesBeforeRightBrackets,
+                                       int countOfSpacesAfterRightBrackets,
+                                       int countOfSpacesInEmptyBrackets,
+                                       int countOfSpacesBeforeLeftBraces,
+                                       int countOfSpacesAfterLeftBraces,
+                                       int countOfSpacesBeforeRightBraces,
+                                       int countOfSpacesAfterRightBraces,
+                                       int countOfSpacesInEmptyBraces,
+                                       int countOfSpacesBeforeComma,
+                                       int countOfSpacesAfterComma) {
         
-        this.insertSpaceAfterComma = insertSpaceAfterComma;
-        this.insertSpaceBeforeComma = insertSpaceBeforeComma;
-        this.insertSpaceAfterParenthesis = insertSpaceAfterParenthesis;
-        this.insertSpaceBeforeParenthesis = insertSpaceBeforeParenthesis;
-        this.insertSpaceAfterBrackets = insertSpaceAfterBrackets;
-        this.insertSpaceBeforeBrackets = insertSpaceBeforeBrackets;
-        this.insertSpaceAfterBraces = insertSpaceAfterBraces;
-        this.insertSpaceBeforeBraces = insertSpaceBeforeBraces;
+        this.minimizeSpaces = minimizeSpaces;
+        this.countOfSpacesBeforeLeftParenthesis = countOfSpacesBeforeLeftParenthesis;
+        this.countOfSpacesAfterLeftParenthesis = countOfSpacesAfterLeftParenthesis;
+        this.countOfSpacesBeforeRightParenthesis = countOfSpacesBeforeRightParenthesis;
+        this.countOfSpacesAfterRightParenthesis = countOfSpacesAfterRightParenthesis;
+        this.countOfSpacesInEmptyParenthesis = countOfSpacesInEmptyParenthesis;
+        this.countOfSpacesBeforeLeftBrackets = countOfSpacesBeforeLeftBrackets;
+        this.countOfSpacesAfterLeftBrackets = countOfSpacesAfterLeftBrackets;
+        this.countOfSpacesBeforeRightBrackets = countOfSpacesBeforeRightBrackets;
+        this.countOfSpacesAfterRightBrackets = countOfSpacesAfterRightBrackets;
+        this.countOfSpacesInEmptyBrackets = countOfSpacesInEmptyBrackets;
+        this.countOfSpacesBeforeLeftBraces = countOfSpacesBeforeLeftBraces;
+        this.countOfSpacesAfterLeftBraces = countOfSpacesAfterLeftBraces;
+        this.countOfSpacesBeforeRightBraces = countOfSpacesBeforeRightBraces;
+        this.countOfSpacesAfterRightBraces = countOfSpacesAfterRightBraces;
+        this.countOfSpacesInEmptyBraces = countOfSpacesInEmptyBraces;
+        this.countOfSpacesBeforeComma = countOfSpacesBeforeComma;
+        this.countOfSpacesAfterComma = countOfSpacesAfterComma;
     }
     
     @Override
-    public boolean isInsertSpaceAfterComma() {
-        return insertSpaceAfterComma;
+    public boolean isMinimizeSpaces() {
+        return minimizeSpaces;
     }
     
     @Override
-    public boolean isInsertSpaceBeforeParenthesis() {
-        return insertSpaceBeforeParenthesis;
+    public int getCountOfSpacesBeforeLeftParenthesis() {
+        return countOfSpacesBeforeLeftParenthesis;
     }
     
     @Override
-    public boolean isInsertSpaceAfterParenthesis() {
-        return insertSpaceAfterParenthesis;
+    public int getCountOfSpacesAfterLeftParenthesis() {
+        return countOfSpacesAfterLeftParenthesis;
     }
     
     @Override
-    public boolean isInsertSpaceBeforeBrackets() {
-        return insertSpaceBeforeBrackets;
+    public int getCountOfSpacesBeforeRightParenthesis() {
+        return countOfSpacesBeforeRightParenthesis;
     }
     
     @Override
-    public boolean isInsertSpaceAfterBraces() {
-        return insertSpaceAfterBraces;
+    public int getCountOfSpacesAfterRightParenthesis() {
+        return countOfSpacesAfterRightParenthesis;
     }
     
     @Override
-    public boolean isInsertSpaceAfterBrackets() {
-        return insertSpaceAfterBrackets;
+    public int getCountOfSpacesInEmptyParenthesis() {
+        return countOfSpacesInEmptyParenthesis;
     }
     
     @Override
-    public boolean isInsertSpaceBeforeBraces() {
-        return insertSpaceBeforeBraces;
+    public int getCountOfSpacesBeforeLeftBrackets() {
+        return countOfSpacesBeforeLeftBrackets;
     }
     
     @Override
-    public boolean isInsertSpaceBeforeComma() {
-        return insertSpaceBeforeComma;
+    public int getCountOfSpacesAfterLeftBrackets() {
+        return countOfSpacesAfterLeftBrackets;
     }
     
     @Override
-    public FormattingConfiguration clone() {
-        try {
-            return (FormattingConfiguration) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError(e);
-        }
+    public int getCountOfSpacesBeforeRightBrackets() {
+        return countOfSpacesBeforeRightBrackets;
+    }
+    
+    @Override
+    public int getCountOfSpacesAfterRightBrackets() {
+        return countOfSpacesAfterRightBrackets;
+    }
+    
+    @Override
+    public int getCountOfSpacesInEmptyBrackets() {
+        return countOfSpacesInEmptyBrackets;
+    }
+    
+    @Override
+    public int getCountOfSpacesBeforeLeftBraces() {
+        return countOfSpacesBeforeLeftBraces;
+    }
+    
+    @Override
+    public int getCountOfSpacesAfterLeftBraces() {
+        return countOfSpacesAfterLeftBraces;
+    }
+    
+    @Override
+    public int getCountOfSpacesBeforeRightBraces() {
+        return countOfSpacesBeforeRightBraces;
+    }
+    
+    @Override
+    public int getCountOfSpacesAfterRightBraces() {
+        return countOfSpacesAfterRightBraces;
+    }
+    
+    @Override
+    public int getCountOfSpacesInEmptyBraces() {
+        return countOfSpacesInEmptyBraces;
+    }
+    
+    @Override
+    public int getCountOfSpacesAfterComma() {
+        return countOfSpacesAfterComma;
+    }
+    
+    @Override
+    public int getCountOfSpacesBeforeComma() {
+        return countOfSpacesBeforeComma;
     }
 }

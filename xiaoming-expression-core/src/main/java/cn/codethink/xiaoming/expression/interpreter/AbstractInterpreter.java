@@ -10,7 +10,6 @@ import cn.codethink.xiaoming.expression.anlyzer.AnalyzingContextImpl;
 import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
 import cn.codethink.xiaoming.expression.compiler.CompilingException;
 import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
-import cn.codethink.xiaoming.expression.formatter.FormattingContextImpl;
 import cn.codethink.xiaoming.expression.formatter.FormattingException;
 import cn.codethink.xiaoming.expression.type.Type;
 import com.google.common.base.Preconditions;
@@ -18,6 +17,7 @@ import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -102,7 +102,7 @@ public abstract class AbstractInterpreter
         
             return (Expression) parser.parse().value;
         } catch (Exception e) {
-            throw new CompilingException(e.getMessage());
+            throw new CompilingException(e);
         }
     }
     
@@ -137,12 +137,120 @@ public abstract class AbstractInterpreter
         return format(expression, FormattingConfiguration.getInstance());
     }
     
+    /**
+     * 格式串中的单元，前后可能存在若干数量的空格
+     */
+    private interface Item {
+        static Item parse(String text) {
+            final int length = text.length();
+    
+            int countOfSpacesBeforeIt = 0;
+            while (countOfSpacesBeforeIt < length && text.charAt(countOfSpacesBeforeIt) == ' ') {
+                countOfSpacesBeforeIt++;
+            }
+            
+            if (countOfSpacesBeforeIt == length) {
+                return new SpaceItem(length);
+            }
+    
+            int countOfSpacesAfterIt = 0;
+            while (countOfSpacesAfterIt >= 0 && text.charAt(length - countOfSpacesAfterIt - 1) == ' ') {
+                countOfSpacesAfterIt--;
+            }
+    
+            return new TextItem(countOfSpacesBeforeIt, text.substring(countOfSpacesBeforeIt, length - countOfSpacesAfterIt), countOfSpacesAfterIt);
+        }
+    
+        static String toString(List<Item> items, boolean minimize) {
+            final StringBuilder stringBuilder = new StringBuilder();
+        
+            if (minimize) {
+                int count = 0;
+                for (Item item : items) {
+                    if (item instanceof SpaceItem) {
+                        count = Math.max(count, ((SpaceItem) item).count);
+                    } else {
+                        final TextItem textItem = (TextItem) item;
+                        count = Math.max(count, textItem.countOfSpacesBeforeContent);
+                        for (int i = 0; i < count; i++) {
+                            stringBuilder.append(' ');
+                        }
+                        count = textItem.countOfSpacesAfterContent;
+                    }
+                }
+                for (int i = 0; i < count; i++) {
+                    stringBuilder.append(' ');
+                }
+            } else {
+                for (Item item : items) {
+                    if (item instanceof SpaceItem) {
+                        final int count = ((SpaceItem) item).count;
+                        for (int i = 0; i < count; i++) {
+                            stringBuilder.append(' ');
+                        }
+                    } else {
+                        final TextItem textItem = (TextItem) item;
+                        for (int i = 0; i < textItem.countOfSpacesBeforeContent; i++) {
+                            stringBuilder.append(' ');
+                        }
+                        stringBuilder.append(textItem.content);
+                        for (int i = 0; i < textItem.countOfSpacesAfterContent; i++) {
+                            stringBuilder.append(' ');
+                        }
+                    }
+                }
+            }
+        
+            return stringBuilder.toString();
+        }
+    }
+    
+    private static class TextItem
+        implements Item {
+        
+        private final int countOfSpacesBeforeContent;
+        private final int countOfSpacesAfterContent;
+        private final String content;
+    
+        public TextItem(int countOfSpacesBeforeContent, String content, int countOfSpacesAfterContent) {
+            Preconditions.checkArgument(countOfSpacesBeforeContent >= 0, "Count of spaces before content must be greater than or equals to 0!");
+            Preconditions.checkArgument(countOfSpacesAfterContent >= 0, "Count of spaces after content must be greater than or equals to 0!");
+            
+            this.countOfSpacesBeforeContent = countOfSpacesBeforeContent;
+            this.content = content;
+            this.countOfSpacesAfterContent = countOfSpacesAfterContent;
+        }
+    
+        public TextItem(String content) {
+            this(0, content, 0);
+        }
+    
+        public TextItem(String content, int countOfSpacesAfterContent) {
+            this(0, content, countOfSpacesAfterContent);
+        }
+    
+        public TextItem(int countOfSpacesBeforeContent, String content) {
+            this(countOfSpacesBeforeContent, content, 0);
+        }
+    }
+    
+    private static class SpaceItem
+        implements Item {
+    
+        private final int count;
+    
+        public SpaceItem(int count) {
+            Preconditions.checkArgument(count >= 0, "Count of spaces must be greater than or equals to 0!");
+            this.count = count;
+        }
+    }
+    
     @Override
     public String format(Expression expression, FormattingConfiguration configuration) throws FormattingException {
         Preconditions.checkNotNull(expression, "Expression is null!");
         Preconditions.checkNotNull(configuration, "Formatting configuration is null!");
     
-        final FormattingContextImpl formattingContext = new FormattingContextImpl(expression, configuration, this);
+        // 格式化常量类型
         if (expression instanceof ConstantExpression) {
             final Object constant = ((ConstantExpression) expression).getConstant();
             if (constant == null) {
@@ -167,89 +275,97 @@ public abstract class AbstractInterpreter
             
             throw new IllegalArgumentException("Unexpected value in ConstantExpression: " + constant);
         }
+        
+        // 格式化元素列表
+        final List<Item> items = new ArrayList<>();
+        final Item comma = new TextItem(configuration.getCountOfSpacesBeforeComma(), ",", configuration.getCountOfSpacesAfterComma());
+        
         if (expression instanceof ConstructExpression) {
+            final Item leftParenthesis = new TextItem(configuration.getCountOfSpacesBeforeLeftParenthesis(),
+                "(", configuration.getCountOfSpacesAfterLeftParenthesis());
+            final Item rightParenthesis = new TextItem(configuration.getCountOfSpacesBeforeRightParenthesis(),
+                ")", configuration.getCountOfSpacesAfterRightParenthesis());
+            
             final ConstructExpression constructExpression = (ConstructExpression) expression;
-    
             final List<Expression> arguments = constructExpression.getArguments();
-            final String expressions;
+            
+            items.add(new TextItem(constructExpression.getType().getName()));
+            items.add(leftParenthesis);
             
             if (arguments.isEmpty()) {
-                return constructExpression.getType().getName() +
-                    (configuration.isInsertSpaceBeforeParenthesis() ? " " : "") + "(" +
-                    (configuration.isInsertSpaceAfterParenthesis() || configuration.isInsertSpaceBeforeParenthesis() ? " " : "") +
-                    (configuration.isInsertSpaceBeforeParenthesis() ? " " : "") + ")" + (configuration.isInsertSpaceAfterParenthesis() ? " " : "");
-            }
-            
-            if (arguments.size() == 1) {
-                expressions = format(arguments.get(0), configuration);
+                items.add(new SpaceItem(configuration.getCountOfSpacesInEmptyBraces()));
             } else {
-                final String comma = (configuration.isInsertSpaceBeforeComma() ? " " : "") + "," + (configuration.isInsertSpaceAfterComma() ? " " : "");
-                final StringBuilder stringBuilder = new StringBuilder(format(arguments.get(0), configuration));
                 final int size = arguments.size();
-                for (int i = 1; i < size; i++) {
-                    stringBuilder.append(comma).append(format(arguments.get(i), configuration));
+                if (size == 1) {
+                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                } else {
+                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                    for (int i = 1; i < size; i++) {
+                        items.add(comma);
+                        items.add(Item.parse(format(arguments.get(i), configuration)));
+                    }
                 }
-                expressions = stringBuilder.toString();
             }
             
-            return constructExpression.getType().getName() +
-                (configuration.isInsertSpaceBeforeParenthesis() ? " " : "") + "(" + (configuration.isInsertSpaceAfterParenthesis() ? " " : "") +
-                expressions +
-                (configuration.isInsertSpaceBeforeParenthesis() ? " " : "") + ")" + (configuration.isInsertSpaceAfterParenthesis() ? " " : "");
+            items.add(rightParenthesis);
+            return Item.toString(items, configuration.isMinimizeSpaces());
         }
         if (expression instanceof ListExpression) {
-            final List<Expression> arguments = ((ListExpression) expression).getExpressions();
+            final Item leftBracket = new TextItem(configuration.getCountOfSpacesBeforeLeftBrackets(),
+                "[", configuration.getCountOfSpacesAfterLeftBrackets());
+            final Item rightBracket = new TextItem(configuration.getCountOfSpacesBeforeRightBrackets(),
+                "]", configuration.getCountOfSpacesAfterRightBrackets());
             
+            final List<Expression> arguments = ((ListExpression) expression).getExpressions();
+    
+            items.add(leftBracket);
+    
             if (arguments.isEmpty()) {
-                return (configuration.isInsertSpaceBeforeBrackets() ? " " : "") + "[" +
-                    (configuration.isInsertSpaceAfterBrackets() || configuration.isInsertSpaceBeforeBrackets() ? " " : "") +
-                    (configuration.isInsertSpaceBeforeBrackets() ? " " : "") + "]" + (configuration.isInsertSpaceAfterBrackets() ? " " : "");
-            }
-    
-            final String expressions;
-            if (arguments.size() == 1) {
-                expressions = format(arguments.get(0), configuration);
+                items.add(new SpaceItem(configuration.getCountOfSpacesInEmptyBrackets()));
             } else {
-                final String comma = (configuration.isInsertSpaceBeforeComma() ? " " : "") + "," + (configuration.isInsertSpaceAfterComma() ? " " : "");
-                final StringBuilder stringBuilder = new StringBuilder(format(arguments.get(0), configuration));
                 final int size = arguments.size();
-                for (int i = 1; i < size; i++) {
-                    stringBuilder.append(comma).append(format(arguments.get(i), configuration));
+                if (size == 1) {
+                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                } else {
+                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                    for (int i = 1; i < size; i++) {
+                        items.add(comma);
+                        items.add(Item.parse(format(arguments.get(i), configuration)));
+                    }
                 }
-                expressions = stringBuilder.toString();
             }
     
-            return (configuration.isInsertSpaceBeforeBrackets() ? " " : "") + "[" + (configuration.isInsertSpaceAfterBrackets() ? " " : "") +
-                expressions +
-                (configuration.isInsertSpaceBeforeBrackets() ? " " : "") + "]" + (configuration.isInsertSpaceAfterBrackets() ? " " : "");
+            items.add(rightBracket);
+            return Item.toString(items, configuration.isMinimizeSpaces());
         }
         if (expression instanceof SetExpression) {
+            final Item leftBrace = new TextItem(configuration.getCountOfSpacesBeforeLeftBraces(),
+                "{", configuration.getCountOfSpacesAfterLeftBraces());
+            final Item rightBrace = new TextItem(configuration.getCountOfSpacesBeforeRightBraces(),
+                "}", configuration.getCountOfSpacesAfterRightBraces());
+    
             final List<Expression> arguments = ((SetExpression) expression).getExpressions();
-        
+    
+            items.add(leftBrace);
+    
             if (arguments.isEmpty()) {
-                return (configuration.isInsertSpaceBeforeBraces() ? " " : "") + "{" +
-                    (configuration.isInsertSpaceAfterBraces() || configuration.isInsertSpaceBeforeBraces() ? " " : "") +
-                    (configuration.isInsertSpaceBeforeBraces() ? " " : "") + "}" + (configuration.isInsertSpaceAfterBraces() ? " " : "");
-            }
-        
-            final String expressions;
-            if (arguments.size() == 1) {
-                expressions = format(arguments.get(0), configuration);
+                items.add(new SpaceItem(configuration.getCountOfSpacesInEmptyBraces()));
             } else {
-                final String comma = (configuration.isInsertSpaceBeforeComma() ? " " : "") + "," + (configuration.isInsertSpaceAfterComma() ? " " : "");
-                final StringBuilder stringBuilder = new StringBuilder(format(arguments.get(0), configuration));
                 final int size = arguments.size();
-                for (int i = 1; i < size; i++) {
-                    stringBuilder.append(comma).append(format(arguments.get(i), configuration));
+                if (size == 1) {
+                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                } else {
+                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                    for (int i = 1; i < size; i++) {
+                        items.add(comma);
+                        items.add(Item.parse(format(arguments.get(i), configuration)));
+                    }
                 }
-                expressions = stringBuilder.toString();
             }
-        
-            return (configuration.isInsertSpaceBeforeBraces() ? " " : "") + "{" + (configuration.isInsertSpaceAfterBraces() ? " " : "") +
-                expressions +
-                (configuration.isInsertSpaceBeforeBraces() ? " " : "") + "}" + (configuration.isInsertSpaceAfterBraces() ? " " : "");
+    
+            items.add(rightBrace);
+            return Item.toString(items, configuration.isMinimizeSpaces());
         }
-        
         return null;
     }
 }
