@@ -17,3 +17,8 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+def publishScriptFile = new File(project.rootDir, "publish.gradle")
+if (publishScriptFile.exists()) {
+    apply from: publishScriptFile.getAbsolutePath()
+}

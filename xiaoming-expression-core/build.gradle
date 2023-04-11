@@ -10,10 +10,11 @@ repositories {
 dependencies {
     api project(':xiaoming-expression-api')
 
-    implementation 'net.java.dev.javacc:javacc:5.0'
+    implementation 'net.java.dev.javacc:javacc:7.0.12'
     implementation 'com.github.vbmacher:java-cup-runtime:11b'
 
     implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'org.apache.commons:commons-text:1.10.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitVersion
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:' + junitVersion
@@ -23,4 +24,9 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+def publishScriptFile = new File(project.rootDir, "publish.gradle")
+if (publishScriptFile.exists()) {
+    apply from: publishScriptFile.getAbsolutePath()
 }
