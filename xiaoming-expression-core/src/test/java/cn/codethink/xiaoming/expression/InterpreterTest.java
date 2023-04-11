@@ -34,14 +34,12 @@ public class InterpreterTest {
     
     @ParameterizedTest
     @CsvSource({
-        "Hello()",
-        "Hello(\"Hello World\")"
+        "URL(\"https://www.codethink.cn\")",
+        "File(\"file\")",
     })
     public void formatString(String expression) {
-        final ConfigurableInterpreter interpreter =
-            ConfigurableInterpreter.newInstance(Interpreter.getInstance());
-        interpreter.registerType(new HelloType());
-    
+        final ConfigurableInterpreter interpreter = ConfigurableInterpreter.getInstance();
+        
         final Expression exp = interpreter.compile(expression);
         final String format = interpreter.format(exp);
         Assertions.assertEquals(expression, format);

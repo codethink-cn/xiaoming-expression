@@ -6,6 +6,7 @@ import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
 import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
 import cn.codethink.xiaoming.expression.formatter.FormattingConfigurationImpl;
 import cn.codethink.xiaoming.expression.interpreter.*;
+import cn.codethink.xiaoming.expression.util.ConfigurableInterpreters;
 
 public class APIImpl
     implements API {
@@ -18,6 +19,11 @@ public class APIImpl
     @Override
     public ConfigurableInterpreter getConfigurableInterpreter(Interpreter interpreter) {
         return new ConfigurableInterpreterImpl(interpreter);
+    }
+    
+    @Override
+    public ConfigurableInterpreter getConfigurableInterpreter() {
+        return ConfigurableInterpreters.getInstance();
     }
     
     @Override

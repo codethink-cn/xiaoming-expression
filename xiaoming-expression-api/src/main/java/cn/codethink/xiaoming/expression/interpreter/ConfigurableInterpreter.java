@@ -22,6 +22,15 @@ public interface ConfigurableInterpreter
     }
     
     /**
+     * 获取全局默认可配置解释器
+     *
+     * @return 可配置解释器
+     */
+    static ConfigurableInterpreter getInstance() {
+        return APIFactory.getInstance().getConfigurableInterpreter();
+    }
+    
+    /**
      * 注册类型
      *
      * @param type 类型
@@ -34,4 +43,18 @@ public interface ConfigurableInterpreter
      * @param object 对象
      */
     void registerType(Object object);
+    
+    /**
+     * 通过反射注册类型
+     *
+     * @param objects 对象
+     */
+    void registerType(Object... objects);
+    
+    /**
+     * 通过反射注册多个类型
+     *
+     * @param object 对象
+     */
+    void registerTypes(Object object);
 }

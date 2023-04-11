@@ -69,4 +69,21 @@ public class ConfigurableInterpreterImpl
         }
         types.put(type.getName(), type);
     }
+    
+    @Override
+    public void registerType(Object... objects) {
+        Preconditions.checkNotNull(objects, "Objects are null!");
+    
+        for (Object object : objects) {
+            registerType(object);
+        }
+    }
+    
+    @Override
+    public void registerTypes(Object object) {
+        Preconditions.checkNotNull(object, "Subject is null!");
+        for (Type type : Types.parseTypes(object)) {
+            registerType(type);
+        }
+    }
 }

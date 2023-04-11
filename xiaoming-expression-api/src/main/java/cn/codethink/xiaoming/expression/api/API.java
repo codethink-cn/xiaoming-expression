@@ -16,6 +16,7 @@ import cn.codethink.xiaoming.expression.interpreter.Interpreter;
 public interface API {
     
     Interpreter getInterpreter();
+    ConfigurableInterpreter getConfigurableInterpreter();
     ConfigurableInterpreter getConfigurableInterpreter(Interpreter interpreter);
     
     AnalyzingConfiguration getAnalyzationConfiguration();
