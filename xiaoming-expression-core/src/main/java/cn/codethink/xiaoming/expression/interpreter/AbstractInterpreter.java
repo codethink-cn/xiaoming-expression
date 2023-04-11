@@ -190,14 +190,10 @@ public abstract class AbstractInterpreter
                 items.add(FormattingSpaceItem.of(configuration.getCountOfSpacesInEmptyBraces()));
             } else {
                 final int size = arguments.size();
-                if (size == 1) {
-                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
-                } else {
-                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
-                    for (int i = 1; i < size; i++) {
-                        items.add(comma);
-                        items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
-                    }
+                items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
+                for (int i = 1; i < size; i++) {
+                    items.add(comma);
+                    items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
                 }
             }
             
@@ -218,14 +214,10 @@ public abstract class AbstractInterpreter
                 items.add(FormattingSpaceItem.of(configuration.getCountOfSpacesInEmptyBrackets()));
             } else {
                 final int size = arguments.size();
-                if (size == 1) {
-                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
-                } else {
-                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
-                    for (int i = 1; i < size; i++) {
-                        items.add(comma);
-                        items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
-                    }
+                items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
+                for (int i = 1; i < size; i++) {
+                    items.add(comma);
+                    items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
                 }
             }
     
@@ -246,14 +238,10 @@ public abstract class AbstractInterpreter
                 items.add(FormattingSpaceItem.of(configuration.getCountOfSpacesInEmptyBraces()));
             } else {
                 final int size = arguments.size();
-                if (size == 1) {
-                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
-                } else {
-                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
-                    for (int i = 1; i < size; i++) {
-                        items.add(comma);
-                        items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
-                    }
+                items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
+                for (int i = 1; i < size; i++) {
+                    items.add(comma);
+                    items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
                 }
             }
     
