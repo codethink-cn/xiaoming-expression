@@ -1,23 +1,25 @@
 package cn.codethink.xiaoming.expression.interpreter;
 
 import cn.codethink.xiaoming.expression.*;
+import cn.codethink.xiaoming.expression.acl.Scanner;
+import cn.codethink.xiaoming.expression.acl.parser;
 import cn.codethink.xiaoming.expression.analyzer.AnalyzingConfiguration;
 import cn.codethink.xiaoming.expression.analyzer.AnalyzingContext;
 import cn.codethink.xiaoming.expression.analyzer.AnalyzingException;
 import cn.codethink.xiaoming.expression.anlyzer.AnalyzingContextImpl;
-import cn.codethink.xiaoming.expression.compiler.CompilingException;
 import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
+import cn.codethink.xiaoming.expression.compiler.CompilingException;
 import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
 import cn.codethink.xiaoming.expression.formatter.FormattingContextImpl;
 import cn.codethink.xiaoming.expression.formatter.FormattingException;
 import cn.codethink.xiaoming.expression.type.Type;
-import cn.codethink.xiaoming.expression.type.acl.Scanner;
-import cn.codethink.xiaoming.expression.type.acl.parser;
 import com.google.common.base.Preconditions;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public abstract class AbstractInterpreter
     implements Interpreter {
@@ -157,62 +159,10 @@ public abstract class AbstractInterpreter
                 return constant.toString();
             }
             if (constant instanceof Character) {
-                switch ((Character) constant) {
-                    case '\b':
-                        return "'\\b'";
-                    case '\t':
-                        return "'\\t'";
-                    case '\n':
-                        return "'\\n'";
-                    case '\f':
-                        return "'\\f'";
-                    case '\r':
-                        return "'\\r'";
-                    case '\"':
-                        return "'\\\"'";
-                    case '\\':
-                        return "'\\\\'";
-                    case '\'':
-                        return "'\\''";
-                    default:
-                        return "'" + constant + "'";
-                }
+                return "'" + StringEscapeUtils.escapeJava(String.valueOf(constant)) + "'";
             }
             if (constant instanceof String) {
-                final String value = (String) constant;
-                final int length = value.length();
-                final StringBuilder stringBuilder = new StringBuilder(length);
-                for (int i = 0; i < length; i++) {
-                    final char ch = value.charAt(i);
-                    switch (ch) {
-                        case '\b':
-                            stringBuilder.append("\\b");
-                            break;
-                        case '\t':
-                            stringBuilder.append("\\t");
-                            break;
-                        case '\n':
-                            stringBuilder.append("\\n");
-                            break;
-                        case '\f':
-                            stringBuilder.append("\\f");
-                            break;
-                        case '\r':
-                            stringBuilder.append("\\r");
-                            break;
-                        case '\"':
-                            stringBuilder.append("\\\"");
-                            break;
-                        case '\\':
-                            stringBuilder.append("\\\\");
-                            break;
-                        case '\'':
-                            stringBuilder.append("\\'");
-                        default:
-                            stringBuilder.append(ch);
-                    }
-                }
-                return "\"" + stringBuilder + "\"";
+                return "\"" + StringEscapeUtils.escapeJava((String) constant) + "\"";
             }
             
             throw new IllegalArgumentException("Unexpected value in ConstantExpression: " + constant);

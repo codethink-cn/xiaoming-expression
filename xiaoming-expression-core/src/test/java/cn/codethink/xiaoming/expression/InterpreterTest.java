@@ -30,15 +30,6 @@ public class InterpreterTest {
             System.out.println(prompt);
             return new Hello();
         }
-        
-        @Analyser
-        public Expression analyze(Interpreter interpreter) {
-            return interpreter.compile("Hello()");
-        }
-        
-        public String format() {
-            return "Hello()";
-        }
     }
     
     @ParameterizedTest
