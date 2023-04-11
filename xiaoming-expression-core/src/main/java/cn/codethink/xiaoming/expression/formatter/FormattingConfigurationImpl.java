@@ -9,24 +9,24 @@ public class FormattingConfigurationImpl
         private boolean minimizeSpaces = true;
         
         private int countOfSpacesBeforeLeftParenthesis = 0;
-        private int countOfSpacesAfterLeftParenthesis = 1;
-        private int countOfSpacesBeforeRightParenthesis = 1;
+        private int countOfSpacesAfterLeftParenthesis = 0;
+        private int countOfSpacesBeforeRightParenthesis = 0;
         private int countOfSpacesAfterRightParenthesis = 0;
-        private int countOfSpacesInEmptyParenthesis = 1;
+        private int countOfSpacesInEmptyParenthesis = 0;
         
         private int countOfSpacesBeforeLeftBrackets = 0;
-        private int countOfSpacesAfterLeftBrackets = 1;
-        private int countOfSpacesBeforeRightBrackets = 1;
+        private int countOfSpacesAfterLeftBrackets = 0;
+        private int countOfSpacesBeforeRightBrackets = 0;
         private int countOfSpacesAfterRightBrackets = 0;
-        private int countOfSpacesInEmptyBrackets = 1;
+        private int countOfSpacesInEmptyBrackets = 0;
         
         private int countOfSpacesBeforeLeftBraces = 0;
-        private int countOfSpacesAfterLeftBraces = 1;
-        private int countOfSpacesBeforeRightBraces = 1;
+        private int countOfSpacesAfterLeftBraces = 0;
+        private int countOfSpacesBeforeRightBraces = 0;
         private int countOfSpacesAfterRightBraces = 0;
-        private int countOfSpacesInEmptyBraces = 1;
+        private int countOfSpacesInEmptyBraces = 0;
         
-        private int countOfSpacesAfterComma = 1;
+        private int countOfSpacesAfterComma = 0;
         private int countOfSpacesBeforeComma = 0;
         
         @Override

@@ -11,6 +11,8 @@ import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
 import cn.codethink.xiaoming.expression.compiler.CompilingException;
 import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
 import cn.codethink.xiaoming.expression.formatter.FormattingException;
+import cn.codethink.xiaoming.expression.formatter.FormattingItem;
+import cn.codethink.xiaoming.expression.formatter.FormattingTextItem;
 import cn.codethink.xiaoming.expression.type.Type;
 import com.google.common.base.Preconditions;
 import org.apache.commons.text.StringEscapeUtils;
@@ -137,114 +139,6 @@ public abstract class AbstractInterpreter
         return format(expression, FormattingConfiguration.getInstance());
     }
     
-    /**
-     * 格式串中的单元，前后可能存在若干数量的空格
-     */
-    private interface Item {
-        static Item parse(String text) {
-            final int length = text.length();
-    
-            int countOfSpacesBeforeIt = 0;
-            while (countOfSpacesBeforeIt < length && text.charAt(countOfSpacesBeforeIt) == ' ') {
-                countOfSpacesBeforeIt++;
-            }
-            
-            if (countOfSpacesBeforeIt == length) {
-                return new SpaceItem(length);
-            }
-    
-            int countOfSpacesAfterIt = 0;
-            while (countOfSpacesAfterIt >= 0 && text.charAt(length - countOfSpacesAfterIt - 1) == ' ') {
-                countOfSpacesAfterIt--;
-            }
-    
-            return new TextItem(countOfSpacesBeforeIt, text.substring(countOfSpacesBeforeIt, length - countOfSpacesAfterIt), countOfSpacesAfterIt);
-        }
-    
-        static String toString(List<Item> items, boolean minimize) {
-            final StringBuilder stringBuilder = new StringBuilder();
-        
-            if (minimize) {
-                int count = 0;
-                for (Item item : items) {
-                    if (item instanceof SpaceItem) {
-                        count = Math.max(count, ((SpaceItem) item).count);
-                    } else {
-                        final TextItem textItem = (TextItem) item;
-                        count = Math.max(count, textItem.countOfSpacesBeforeContent);
-                        for (int i = 0; i < count; i++) {
-                            stringBuilder.append(' ');
-                        }
-                        count = textItem.countOfSpacesAfterContent;
-                    }
-                }
-                for (int i = 0; i < count; i++) {
-                    stringBuilder.append(' ');
-                }
-            } else {
-                for (Item item : items) {
-                    if (item instanceof SpaceItem) {
-                        final int count = ((SpaceItem) item).count;
-                        for (int i = 0; i < count; i++) {
-                            stringBuilder.append(' ');
-                        }
-                    } else {
-                        final TextItem textItem = (TextItem) item;
-                        for (int i = 0; i < textItem.countOfSpacesBeforeContent; i++) {
-                            stringBuilder.append(' ');
-                        }
-                        stringBuilder.append(textItem.content);
-                        for (int i = 0; i < textItem.countOfSpacesAfterContent; i++) {
-                            stringBuilder.append(' ');
-                        }
-                    }
-                }
-            }
-        
-            return stringBuilder.toString();
-        }
-    }
-    
-    private static class TextItem
-        implements Item {
-        
-        private final int countOfSpacesBeforeContent;
-        private final int countOfSpacesAfterContent;
-        private final String content;
-    
-        public TextItem(int countOfSpacesBeforeContent, String content, int countOfSpacesAfterContent) {
-            Preconditions.checkArgument(countOfSpacesBeforeContent >= 0, "Count of spaces before content must be greater than or equals to 0!");
-            Preconditions.checkArgument(countOfSpacesAfterContent >= 0, "Count of spaces after content must be greater than or equals to 0!");
-            
-            this.countOfSpacesBeforeContent = countOfSpacesBeforeContent;
-            this.content = content;
-            this.countOfSpacesAfterContent = countOfSpacesAfterContent;
-        }
-    
-        public TextItem(String content) {
-            this(0, content, 0);
-        }
-    
-        public TextItem(String content, int countOfSpacesAfterContent) {
-            this(0, content, countOfSpacesAfterContent);
-        }
-    
-        public TextItem(int countOfSpacesBeforeContent, String content) {
-            this(countOfSpacesBeforeContent, content, 0);
-        }
-    }
-    
-    private static class SpaceItem
-        implements Item {
-    
-        private final int count;
-    
-        public SpaceItem(int count) {
-            Preconditions.checkArgument(count >= 0, "Count of spaces must be greater than or equals to 0!");
-            this.count = count;
-        }
-    }
-    
     @Override
     public String format(Expression expression, FormattingConfiguration configuration) throws FormattingException {
         Preconditions.checkNotNull(expression, "Expression is null!");
@@ -277,43 +171,43 @@ public abstract class AbstractInterpreter
         }
         
         // 格式化元素列表
-        final List<Item> items = new ArrayList<>();
-        final Item comma = new TextItem(configuration.getCountOfSpacesBeforeComma(), ",", configuration.getCountOfSpacesAfterComma());
+        final List<FormattingItem> items = new ArrayList<>();
+        final FormattingItem comma = new FormattingTextItem(configuration.getCountOfSpacesBeforeComma(), ",", configuration.getCountOfSpacesAfterComma());
         
         if (expression instanceof ConstructExpression) {
-            final Item leftParenthesis = new TextItem(configuration.getCountOfSpacesBeforeLeftParenthesis(),
+            final FormattingItem leftParenthesis = new FormattingTextItem(configuration.getCountOfSpacesBeforeLeftParenthesis(),
                 "(", configuration.getCountOfSpacesAfterLeftParenthesis());
-            final Item rightParenthesis = new TextItem(configuration.getCountOfSpacesBeforeRightParenthesis(),
+            final FormattingItem rightParenthesis = new FormattingTextItem(configuration.getCountOfSpacesBeforeRightParenthesis(),
                 ")", configuration.getCountOfSpacesAfterRightParenthesis());
             
             final ConstructExpression constructExpression = (ConstructExpression) expression;
             final List<Expression> arguments = constructExpression.getArguments();
             
-            items.add(new TextItem(constructExpression.getType().getName()));
+            items.add(new FormattingTextItem(constructExpression.getType().getName()));
             items.add(leftParenthesis);
             
             if (arguments.isEmpty()) {
-                items.add(new SpaceItem(configuration.getCountOfSpacesInEmptyBraces()));
+                items.add(FormattingSpaceItem.of(configuration.getCountOfSpacesInEmptyBraces()));
             } else {
                 final int size = arguments.size();
                 if (size == 1) {
-                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
                 } else {
-                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
                     for (int i = 1; i < size; i++) {
                         items.add(comma);
-                        items.add(Item.parse(format(arguments.get(i), configuration)));
+                        items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
                     }
                 }
             }
             
             items.add(rightParenthesis);
-            return Item.toString(items, configuration.isMinimizeSpaces());
+            return FormattingItem.toString(items, configuration.isMinimizeSpaces());
         }
         if (expression instanceof ListExpression) {
-            final Item leftBracket = new TextItem(configuration.getCountOfSpacesBeforeLeftBrackets(),
+            final FormattingItem leftBracket = new FormattingTextItem(configuration.getCountOfSpacesBeforeLeftBrackets(),
                 "[", configuration.getCountOfSpacesAfterLeftBrackets());
-            final Item rightBracket = new TextItem(configuration.getCountOfSpacesBeforeRightBrackets(),
+            final FormattingItem rightBracket = new FormattingTextItem(configuration.getCountOfSpacesBeforeRightBrackets(),
                 "]", configuration.getCountOfSpacesAfterRightBrackets());
             
             final List<Expression> arguments = ((ListExpression) expression).getExpressions();
@@ -321,27 +215,27 @@ public abstract class AbstractInterpreter
             items.add(leftBracket);
     
             if (arguments.isEmpty()) {
-                items.add(new SpaceItem(configuration.getCountOfSpacesInEmptyBrackets()));
+                items.add(FormattingSpaceItem.of(configuration.getCountOfSpacesInEmptyBrackets()));
             } else {
                 final int size = arguments.size();
                 if (size == 1) {
-                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
                 } else {
-                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
                     for (int i = 1; i < size; i++) {
                         items.add(comma);
-                        items.add(Item.parse(format(arguments.get(i), configuration)));
+                        items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
                     }
                 }
             }
     
             items.add(rightBracket);
-            return Item.toString(items, configuration.isMinimizeSpaces());
+            return FormattingItem.toString(items, configuration.isMinimizeSpaces());
         }
         if (expression instanceof SetExpression) {
-            final Item leftBrace = new TextItem(configuration.getCountOfSpacesBeforeLeftBraces(),
+            final FormattingItem leftBrace = new FormattingTextItem(configuration.getCountOfSpacesBeforeLeftBraces(),
                 "{", configuration.getCountOfSpacesAfterLeftBraces());
-            final Item rightBrace = new TextItem(configuration.getCountOfSpacesBeforeRightBraces(),
+            final FormattingItem rightBrace = new FormattingTextItem(configuration.getCountOfSpacesBeforeRightBraces(),
                 "}", configuration.getCountOfSpacesAfterRightBraces());
     
             final List<Expression> arguments = ((SetExpression) expression).getExpressions();
@@ -349,22 +243,22 @@ public abstract class AbstractInterpreter
             items.add(leftBrace);
     
             if (arguments.isEmpty()) {
-                items.add(new SpaceItem(configuration.getCountOfSpacesInEmptyBraces()));
+                items.add(FormattingSpaceItem.of(configuration.getCountOfSpacesInEmptyBraces()));
             } else {
                 final int size = arguments.size();
                 if (size == 1) {
-                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
                 } else {
-                    items.add(Item.parse(format(arguments.get(0), configuration)));
+                    items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
                     for (int i = 1; i < size; i++) {
                         items.add(comma);
-                        items.add(Item.parse(format(arguments.get(i), configuration)));
+                        items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
                     }
                 }
             }
     
             items.add(rightBrace);
-            return Item.toString(items, configuration.isMinimizeSpaces());
+            return FormattingItem.toString(items, configuration.isMinimizeSpaces());
         }
         return null;
     }
