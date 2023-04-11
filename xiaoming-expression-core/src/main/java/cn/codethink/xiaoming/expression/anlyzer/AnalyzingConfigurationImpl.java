@@ -8,35 +8,16 @@ public class AnalyzingConfigurationImpl
     public static class BuilderImpl
         implements Builder {
     
-        private boolean flatData = false;
-        
-        @Override
-        public Builder flatData(boolean flatData) {
-            this.flatData = flatData;
-            return this;
-        }
-    
         @Override
         public AnalyzingConfiguration build() {
-            return new AnalyzingConfigurationImpl(flatData);
+            return INSTANCE;
         }
     }
     
-    private static final AnalyzingConfiguration INSTANCE = AnalyzingConfiguration.builder().build();
+    private static final AnalyzingConfiguration INSTANCE = new AnalyzingConfigurationImpl();
     
     public static AnalyzingConfiguration getInstance() {
         return INSTANCE;
-    }
-    
-    private final boolean flatData;
-    
-    public AnalyzingConfigurationImpl(boolean flatData) {
-        this.flatData = flatData;
-    }
-    
-    @Override
-    public boolean isFlatData() {
-        return flatData;
     }
     
     @Override

@@ -54,13 +54,7 @@ public class ConfigurableInterpreters {
         @Type(File.class)
         @Analyser
         public Expression analyzeFile(File file, Interpreter interpreter, AnalyzingConfiguration configuration) {
-            final String path;
-            if (configuration.isFlatData()) {
-                path = file.getAbsolutePath();
-            } else {
-                path = file.getName();
-            }
-            return interpreter.compile("File(\"" + StringEscapeUtils.escapeJava(path) + "\")");
+            return interpreter.compile("File(\"" + StringEscapeUtils.escapeJava(file.getName()) + "\")");
         }
         
         @Constructor

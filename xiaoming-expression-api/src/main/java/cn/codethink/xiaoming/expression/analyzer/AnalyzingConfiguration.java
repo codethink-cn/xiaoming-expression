@@ -18,14 +18,6 @@ public interface AnalyzingConfiguration
     interface Builder {
     
         /**
-         * 设置是否展平数据
-         *
-         * @param flatData 是否展平数据
-         * @return 分析配置构建器
-         */
-        Builder flatData(boolean flatData);
-    
-        /**
          * 构造分析配置
          *
          * @return 分析配置
@@ -50,13 +42,6 @@ public interface AnalyzingConfiguration
     static AnalyzingConfiguration getInstance() {
         return APIFactory.getInstance().getAnalyzationConfiguration();
     }
-    
-    /**
-     * 是否展平数据
-     *
-     * @return 是否展平数据
-     */
-    boolean isFlatData();
     
     /**
      * 复制配置对象

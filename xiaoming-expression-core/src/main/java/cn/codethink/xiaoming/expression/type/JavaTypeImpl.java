@@ -91,4 +91,9 @@ public class JavaTypeImpl
     public Set<Analyzer> getAnalysers() {
         return analyzers;
     }
+    
+    @Override
+    public String toString() {
+        return name + " (" + javaClass.getName() + ")";
+    }
 }
