@@ -60,10 +60,10 @@ start with expression;
 
 // literal
 literal ::=
-    INTEGER_LITERAL:l                           {: RESULT = LiteralExpression.of(l); :}
-	|	FLOATING_POINT_LITERAL:l                    {: RESULT = LiteralExpression.of(l); :}
-	|	BOOLEAN_LITERAL:l                           {: RESULT = LiteralExpression.of(l); :}
-	|	CHARACTER_LITERAL:l                         {: RESULT = LiteralExpression.of(l); :}
+    INTEGER_LITERAL:l                           {: RESULT = LiteralExpression.of(l.intValue()); :}
+	|	FLOATING_POINT_LITERAL:l                    {: RESULT = LiteralExpression.of(l.doubleValue()); :}
+	|	BOOLEAN_LITERAL:l                           {: RESULT = LiteralExpression.of(l.booleanValue()); :}
+	|	CHARACTER_LITERAL:l                         {: RESULT = LiteralExpression.of(l.charValue()); :}
 	|	STRING_LITERAL:l                            {: RESULT = LiteralExpression.of(l); :}
 	|	NULL_LITERAL                                {: RESULT = LiteralExpression.ofNull(); :}
 	;
@@ -82,7 +82,7 @@ primary_no_new_collection ::=
 	|	method_invocation:i                         {: RESULT = i; :}
 	;
 method_invocation ::=
-    type:t LPAREN argument_list_opt:l RPAREN    {: RESULT = new InvokeExpressionImpl(t.getFunctionOrFail(((List<Expression>) l).stream().map(Expression::getType).collect(Collectors.toList())), l); :}
+    type:t LPAREN argument_list_opt:l RPAREN    {: RESULT = new InvokeExpressionImpl(interpreter.getFunctionOrFail(t, ((List<Expression>) l).stream().map(Expression::getResultClass).collect(Collectors.toList())), l); :}
   ;
 argument_list_opt ::=                           {: RESULT = Collections.emptyList(); :}
 	|	argument_list   :i                          {: RESULT = i; :}
