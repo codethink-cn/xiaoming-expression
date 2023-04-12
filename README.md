@@ -9,9 +9,9 @@
 
 ### 开源许可
 
-小明表达式在 [Apache License](https://www.apache.org/licenses/LICENSE-2.0) 许可证下发布。
+小明表达式在 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 许可证下发布。
 
-```
+```text
 Copyright 2023 CodeThink Technologies and contributors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
