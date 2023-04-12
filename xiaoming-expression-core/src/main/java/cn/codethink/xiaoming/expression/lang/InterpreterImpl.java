@@ -254,13 +254,13 @@ public class InterpreterImpl
         
         // 格式化元素列表
         final List<FormattingItem> items = new ArrayList<>();
-        final FormattingItem comma = new FormattingTextItem(configuration.getCountOfSpacesBeforeComma(), ",", configuration.getCountOfSpacesAfterComma());
+        final FormattingItem comma = new FormattingTextItem(configuration.getSpacesBeforeComma(), ",", configuration.getSpacesAfterComma());
         
         if (expression instanceof InvokeExpression) {
-            final FormattingItem leftParenthesis = new FormattingTextItem(configuration.getCountOfSpacesBeforeLeftParenthesis(),
-                "(", configuration.getCountOfSpacesAfterLeftParenthesis());
-            final FormattingItem rightParenthesis = new FormattingTextItem(configuration.getCountOfSpacesBeforeRightParenthesis(),
-                ")", configuration.getCountOfSpacesAfterRightParenthesis());
+            final FormattingItem leftParenthesis = new FormattingTextItem(configuration.getSpacesBeforeLeftParenthesis(),
+                "(", configuration.getSpacesAfterLeftParenthesis());
+            final FormattingItem rightParenthesis = new FormattingTextItem(configuration.getSpacesBeforeRightParenthesis(),
+                ")", configuration.getSpacesAfterRightParenthesis());
             
             final InvokeExpression invokeExpression = (InvokeExpression) expression;
             final List<Expression> arguments = invokeExpression.getArguments();
@@ -269,7 +269,7 @@ public class InterpreterImpl
             items.add(leftParenthesis);
             
             if (arguments.isEmpty()) {
-                items.add(FormattingSpaceItem.of(configuration.getCountOfSpacesInEmptyBraces()));
+                items.add(FormattingSpaceItem.of(configuration.getSpacesInEmptyBraces()));
             } else {
                 final int size = arguments.size();
                 items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
@@ -283,17 +283,17 @@ public class InterpreterImpl
             return FormattingItem.toString(items, configuration.isMinimizeSpaces());
         }
         if (expression instanceof ListExpression) {
-            final FormattingItem leftBracket = new FormattingTextItem(configuration.getCountOfSpacesBeforeLeftBrackets(),
-                "[", configuration.getCountOfSpacesAfterLeftBrackets());
-            final FormattingItem rightBracket = new FormattingTextItem(configuration.getCountOfSpacesBeforeRightBrackets(),
-                "]", configuration.getCountOfSpacesAfterRightBrackets());
+            final FormattingItem leftBracket = new FormattingTextItem(configuration.getSpacesBeforeLeftBrackets(),
+                "[", configuration.getSpacesAfterLeftBrackets());
+            final FormattingItem rightBracket = new FormattingTextItem(configuration.getSpacesBeforeRightBrackets(),
+                "]", configuration.getSpacesAfterRightBrackets());
             
             final List<Expression> arguments = ((ListExpression) expression).getExpressions();
             
             items.add(leftBracket);
             
             if (arguments.isEmpty()) {
-                items.add(FormattingSpaceItem.of(configuration.getCountOfSpacesInEmptyBrackets()));
+                items.add(FormattingSpaceItem.of(configuration.getSpacesInEmptyBrackets()));
             } else {
                 final int size = arguments.size();
                 items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
@@ -307,17 +307,17 @@ public class InterpreterImpl
             return FormattingItem.toString(items, configuration.isMinimizeSpaces());
         }
         if (expression instanceof SetExpression) {
-            final FormattingItem leftBrace = new FormattingTextItem(configuration.getCountOfSpacesBeforeLeftBraces(),
-                "{", configuration.getCountOfSpacesAfterLeftBraces());
-            final FormattingItem rightBrace = new FormattingTextItem(configuration.getCountOfSpacesBeforeRightBraces(),
-                "}", configuration.getCountOfSpacesAfterRightBraces());
+            final FormattingItem leftBrace = new FormattingTextItem(configuration.getSpacesBeforeLeftBraces(),
+                "{", configuration.getSpacesAfterLeftBraces());
+            final FormattingItem rightBrace = new FormattingTextItem(configuration.getSpacesBeforeRightBraces(),
+                "}", configuration.getSpacesAfterRightBraces());
             
             final List<Expression> arguments = ((SetExpression) expression).getExpressions();
             
             items.add(leftBrace);
             
             if (arguments.isEmpty()) {
-                items.add(FormattingSpaceItem.of(configuration.getCountOfSpacesInEmptyBraces()));
+                items.add(FormattingSpaceItem.of(configuration.getSpacesInEmptyBraces()));
             } else {
                 final int size = arguments.size();
                 items.add(FormattingItem.parse(format(arguments.get(0), configuration)));

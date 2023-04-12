@@ -27,21 +27,21 @@ public interface FormattingItem {
     static FormattingItem parse(String text) {
         final int length = text.length();
         
-        int countOfSpacesBeforeIt = 0;
-        while (countOfSpacesBeforeIt < length && text.charAt(countOfSpacesBeforeIt) == ' ') {
-            countOfSpacesBeforeIt++;
+        int spacesBeforeIt = 0;
+        while (spacesBeforeIt < length && text.charAt(spacesBeforeIt) == ' ') {
+            spacesBeforeIt++;
         }
         
-        if (countOfSpacesBeforeIt == length) {
+        if (spacesBeforeIt == length) {
             return FormattingSpaceItem.of(length);
         }
         
-        int countOfSpacesAfterIt = 0;
-        while (countOfSpacesAfterIt >= 0 && text.charAt(length - countOfSpacesAfterIt - 1) == ' ') {
-            countOfSpacesAfterIt--;
+        int spacesAfterIt = 0;
+        while (spacesAfterIt >= 0 && text.charAt(length - spacesAfterIt - 1) == ' ') {
+            spacesAfterIt--;
         }
         
-        return new FormattingTextItem(countOfSpacesBeforeIt, text.substring(countOfSpacesBeforeIt, length - countOfSpacesAfterIt), countOfSpacesAfterIt);
+        return new FormattingTextItem(spacesBeforeIt, text.substring(spacesBeforeIt, length - spacesAfterIt), spacesAfterIt);
     }
     
     static String toString(List<FormattingItem> items, boolean minimize) {
@@ -54,11 +54,11 @@ public interface FormattingItem {
                     count = Math.max(count, ((FormattingSpaceItem) item).getCount());
                 } else {
                     final FormattingTextItem textItem = (FormattingTextItem) item;
-                    count = Math.max(count, textItem.getCountOfSpacesBeforeContent());
+                    count = Math.max(count, textItem.getSpacesBeforeContent());
                     for (int i = 0; i < count; i++) {
                         stringBuilder.append(' ');
                     }
-                    count = textItem.getCountOfSpacesAfterContent();
+                    count = textItem.getSpacesAfterContent();
                     stringBuilder.append(textItem.getContent());
                 }
             }
@@ -74,11 +74,11 @@ public interface FormattingItem {
                     }
                 } else {
                     final FormattingTextItem textItem = (FormattingTextItem) item;
-                    for (int i = 0; i < textItem.getCountOfSpacesBeforeContent(); i++) {
+                    for (int i = 0; i < textItem.getSpacesBeforeContent(); i++) {
                         stringBuilder.append(' ');
                     }
                     stringBuilder.append(textItem.getContent());
-                    for (int i = 0; i < textItem.getCountOfSpacesAfterContent(); i++) {
+                    for (int i = 0; i < textItem.getSpacesAfterContent(); i++) {
                         stringBuilder.append(' ');
                     }
                 }

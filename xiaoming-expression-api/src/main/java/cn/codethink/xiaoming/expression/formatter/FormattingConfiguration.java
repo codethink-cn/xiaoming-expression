@@ -44,138 +44,138 @@ public interface FormattingConfiguration
         /**
          * 设置左圆括号前的空格数
          *
-         * @param countOfSpacesBeforeLeftParenthesis 左圆括号前的空格数
+         * @param spacesBeforeLeftParenthesis 左圆括号前的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesBeforeLeftParenthesis(int countOfSpacesBeforeLeftParenthesis);
+        Builder spacesBeforeLeftParenthesis(int spacesBeforeLeftParenthesis);
     
         /**
          * 设置左圆括号后的空格数
          *
-         * @param countOfSpacesAfterLeftParenthesis 左圆括号后的空格数
+         * @param spacesAfterLeftParenthesis 左圆括号后的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesAfterLeftParenthesis(int countOfSpacesAfterLeftParenthesis);
+        Builder spacesAfterLeftParenthesis(int spacesAfterLeftParenthesis);
     
         /**
          * 设置右圆括号前的空格数
          *
-         * @param countOfSpacesBeforeRightParenthesis 右圆括号前的空格数
+         * @param spacesBeforeRightParenthesis 右圆括号前的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesBeforeRightParenthesis(int countOfSpacesBeforeRightParenthesis);
+        Builder spacesBeforeRightParenthesis(int spacesBeforeRightParenthesis);
     
         /**
          * 设置右圆括号后的空格数
          *
-         * @param countOfSpacesAfterRightParenthesis 右圆括号后的空格数
+         * @param spacesAfterRightParenthesis 右圆括号后的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesAfterRightParenthesis(int countOfSpacesAfterRightParenthesis);
+        Builder spacesAfterRightParenthesis(int spacesAfterRightParenthesis);
     
         /**
          * 设置空圆括号中的空格数
          *
-         * @param countOfSpacesInEmptyParenthesis 空圆括号中的空格数
+         * @param spacesInEmptyParenthesis 空圆括号中的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesInEmptyParenthesis(int countOfSpacesInEmptyParenthesis);
+        Builder spacesInEmptyParenthesis(int spacesInEmptyParenthesis);
     
         /**
          * 设置左方括号前的空格数
          *
-         * @param countOfSpacesBeforeLeftBrackets 左方括号前的空格数
+         * @param spacesBeforeLeftBrackets 左方括号前的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesBeforeLeftBrackets(int countOfSpacesBeforeLeftBrackets);
+        Builder spacesBeforeLeftBrackets(int spacesBeforeLeftBrackets);
     
         /**
          * 设置左方括号后的空格数
          *
-         * @param countOfSpacesAfterLeftBrackets 左方括号后的空格数
+         * @param spacesAfterLeftBrackets 左方括号后的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesAfterLeftBrackets(int countOfSpacesAfterLeftBrackets);
+        Builder spacesAfterLeftBrackets(int spacesAfterLeftBrackets);
     
         /**
          * 设置右方括号前的空格数
          *
-         * @param countOfSpacesBeforeRightBrackets 右方括号前的空格数
+         * @param spacesBeforeRightBrackets 右方括号前的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesBeforeRightBrackets(int countOfSpacesBeforeRightBrackets);
+        Builder spacesBeforeRightBrackets(int spacesBeforeRightBrackets);
     
         /**
          * 设置右方括号后的空格数
          *
-         * @param countOfSpacesAfterRightBrackets 右方括号后的空格数
+         * @param spacesAfterRightBrackets 右方括号后的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesAfterRightBrackets(int countOfSpacesAfterRightBrackets);
+        Builder spacesAfterRightBrackets(int spacesAfterRightBrackets);
     
         /**
          * 设置空方括号中的空格数
          *
-         * @param countOfSpacesInEmptyBrackets 空方括号中的空格数
+         * @param spacesInEmptyBrackets 空方括号中的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesInEmptyBrackets(int countOfSpacesInEmptyBrackets);
+        Builder spacesInEmptyBrackets(int spacesInEmptyBrackets);
     
         /**
          * 设置左花括号前的空格数
          *
-         * @param countOfSpacesBeforeLeftBraces 左花括号前的空格数
+         * @param spacesBeforeLeftBraces 左花括号前的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesBeforeLeftBraces(int countOfSpacesBeforeLeftBraces);
+        Builder spacesBeforeLeftBraces(int spacesBeforeLeftBraces);
     
         /**
          * 设置左花括号后的空格数
          *
-         * @param countOfSpacesAfterLeftBraces 左花括号后的空格数
+         * @param spacesAfterLeftBraces 左花括号后的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesAfterLeftBraces(int countOfSpacesAfterLeftBraces);
+        Builder spacesAfterLeftBraces(int spacesAfterLeftBraces);
     
         /**
          * 设置右花括号前的空格数
          *
-         * @param countOfSpacesBeforeRightBraces 右花括号前的空格数
+         * @param spacesBeforeRightBraces 右花括号前的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesBeforeRightBraces(int countOfSpacesBeforeRightBraces);
+        Builder spacesBeforeRightBraces(int spacesBeforeRightBraces);
     
         /**
          * 设置右花括号后的空格数
          *
-         * @param countOfSpacesAfterRightBraces 右花括号后的空格数
+         * @param spacesAfterRightBraces 右花括号后的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesAfterRightBraces(int countOfSpacesAfterRightBraces);
+        Builder spacesAfterRightBraces(int spacesAfterRightBraces);
     
         /**
          * 设置空花括号中的空格数
          *
-         * @param countOfSpacesInEmptyBraces 空花括号中的空格数
+         * @param spacesInEmptyBraces 空花括号中的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesInEmptyBraces(int countOfSpacesInEmptyBraces);
+        Builder spacesInEmptyBraces(int spacesInEmptyBraces);
     
         /**
          * 设置逗号前的空格数
          *
-         * @param countOfSpacesBeforeComma 逗号前的空格数
+         * @param spacesBeforeComma 逗号前的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesBeforeComma(int countOfSpacesBeforeComma);
+        Builder spacesBeforeComma(int spacesBeforeComma);
     
         /**
          * 设置逗号后的空格数
          *
-         * @param countOfSpacesAfterComma 逗号后的空格数
+         * @param spacesAfterComma 逗号后的空格数
          * @return 格式配置构建器
          */
-        Builder countOfSpacesAfterComma(int countOfSpacesAfterComma);
+        Builder spacesAfterComma(int spacesAfterComma);
     
         /**
          * 构造格式配置
@@ -215,117 +215,117 @@ public interface FormattingConfiguration
      *
      * @return 左圆括号前的空格数
      */
-    int getCountOfSpacesBeforeLeftParenthesis();
+    int getSpacesBeforeLeftParenthesis();
     
     /**
      * 获取左圆括号后的空格数
      *
      * @return 左圆括号后的空格数
      */
-    int getCountOfSpacesAfterLeftParenthesis();
+    int getSpacesAfterLeftParenthesis();
     
     /**
      * 获取右圆括号前的空格数
      *
      * @return 右圆括号前的空格数
      */
-    int getCountOfSpacesBeforeRightParenthesis();
+    int getSpacesBeforeRightParenthesis();
     
     /**
      * 获取右圆括号后的空格数
      *
      * @return 右圆括号后的空格数
      */
-    int getCountOfSpacesAfterRightParenthesis();
+    int getSpacesAfterRightParenthesis();
     
     /**
      * 获取空圆括号中的空格数
      *
      * @return 空圆括号中的空格数
      */
-    int getCountOfSpacesInEmptyParenthesis();
+    int getSpacesInEmptyParenthesis();
     
     /**
      * 获取左方括号前的空格数
      *
      * @return 左方括号前的空格数
      */
-    int getCountOfSpacesBeforeLeftBrackets();
+    int getSpacesBeforeLeftBrackets();
     
     /**
      * 获取左方括号后的空格数
      *
      * @return 左方括号后的空格数
      */
-    int getCountOfSpacesAfterLeftBrackets();
+    int getSpacesAfterLeftBrackets();
     
     /**
      * 获取右方括号前的空格数
      *
      * @return 右方括号前的空格数
      */
-    int getCountOfSpacesBeforeRightBrackets();
+    int getSpacesBeforeRightBrackets();
     
     /**
      * 获取右方括号后的空格数
      *
      * @return 右方括号后的空格数
      */
-    int getCountOfSpacesAfterRightBrackets();
+    int getSpacesAfterRightBrackets();
     
     /**
      * 获取空方括号中的空格数
      *
      * @return 空方括号中的空格数
      */
-    int getCountOfSpacesInEmptyBrackets();
+    int getSpacesInEmptyBrackets();
     
     /**
      * 获取左花括号前的空格数
      *
      * @return 左花括号前的空格数
      */
-    int getCountOfSpacesBeforeLeftBraces();
+    int getSpacesBeforeLeftBraces();
     
     /**
      * 获取左花括号后的空格数
      *
      * @return 左花括号后的空格数
      */
-    int getCountOfSpacesAfterLeftBraces();
+    int getSpacesAfterLeftBraces();
     
     /**
      * 获取右花括号前的空格数
      *
      * @return 右花括号前的空格数
      */
-    int getCountOfSpacesBeforeRightBraces();
+    int getSpacesBeforeRightBraces();
     
     /**
      * 获取右花括号后的空格数
      *
      * @return 右花括号后的空格数
      */
-    int getCountOfSpacesAfterRightBraces();
+    int getSpacesAfterRightBraces();
     
     /**
      * 获取空花括号中的空格数
      *
      * @return 空花括号中的空格数
      */
-    int getCountOfSpacesInEmptyBraces();
+    int getSpacesInEmptyBraces();
     
     /**
      * 获取逗号前的空格数
      *
      * @return 逗号前的空格数
      */
-    int getCountOfSpacesBeforeComma();
+    int getSpacesBeforeComma();
     
     /**
      * 获取逗号后的空格数
      *
      * @return 逗号后的空格数
      */
-    int getCountOfSpacesAfterComma();
+    int getSpacesAfterComma();
 }
