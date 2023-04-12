@@ -1,46 +1,52 @@
 package cn.codethink.xiaoming.expression.api;
 
+import cn.codethink.xiaoming.expression.LiteralExpression;
+import cn.codethink.xiaoming.expression.LiteralExpressionImpl;
 import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
 import cn.codethink.xiaoming.expression.formatter.FormattingConfigurationImpl;
 import cn.codethink.xiaoming.expression.lang.*;
-import cn.codethink.xiaoming.expression.util.Interpreters;
 
 public class APIImpl
     implements API {
     
     @Override
     public Interpreter getInterpreter() {
-        return RootInterpreterImpl.getInstance();
+        return new InterpreterImpl();
     }
     
     @Override
-    public ConfigurableInterpreter getConfigurableInterpreter(Interpreter interpreter) {
-        return new ConfigurableInterpreterImpl(interpreter);
+    public Interpreter getInterpreter(Interpreter interpreter) {
+        return new InterpreterImpl(interpreter);
     }
     
     @Override
-    public ConfigurableInterpreter getConfigurableInterpreter() {
-        return Interpreters.getInstance();
+    public LiteralExpression getNullLiteralExpression() {
+        return LiteralExpressionImpl.ofNull();
     }
     
     @Override
-    public AnalyzingConfiguration getAnalyzationConfiguration() {
-        return AnalyzingConfigurationImpl.getInstance();
+    public LiteralExpression getLiteralExpression(int value) {
+        return LiteralExpressionImpl.of(value);
     }
     
     @Override
-    public AnalyzingConfiguration.Builder getAnalyzationConfigurationBuilder() {
-        return new AnalyzingConfigurationImpl.BuilderImpl();
+    public LiteralExpression getLiteralExpression(double value) {
+        return LiteralExpressionImpl.of(value);
     }
     
     @Override
-    public CompilingConfiguration getCompileConfiguration() {
-        return CompilingConfigurationImpl.getInstance();
+    public LiteralExpression getLiteralExpression(boolean value) {
+        return LiteralExpressionImpl.of(value);
     }
     
     @Override
-    public CompilingConfiguration.Builder getCompileConfigurationBuilder() {
-        return new CompilingConfigurationImpl.BuilderImpl();
+    public LiteralExpression getLiteralExpression(char value) {
+        return LiteralExpressionImpl.of(value);
+    }
+    
+    @Override
+    public LiteralExpression getLiteralExpression(String value) {
+        return LiteralExpressionImpl.of(value);
     }
     
     @Override

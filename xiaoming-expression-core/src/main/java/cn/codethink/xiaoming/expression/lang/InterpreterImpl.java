@@ -24,11 +24,11 @@ public class InterpreterImpl
     private final List<Analyzer> analyzers = new CopyOnWriteArrayList<>();
     private final List<Function> functions = new CopyOnWriteArrayList<>();
     
-    protected InterpreterImpl() {
+    public InterpreterImpl() {
         this.parent = null;
     }
     
-    protected InterpreterImpl(Interpreter parent) {
+    public InterpreterImpl(Interpreter parent) {
         Preconditions.checkNotNull(parent, "Parent is null!");
         Preconditions.checkArgument(parent instanceof InterpreterImpl, "Unexpected parent, expect an instance of " + InterpreterImpl.class.getName());
         
@@ -137,6 +137,7 @@ public class InterpreterImpl
     }
     
     @Override
+    @SuppressWarnings("all")
     public Expression compile(Reader reader) {
         Preconditions.checkNotNull(reader, "Reader is null!");
         
