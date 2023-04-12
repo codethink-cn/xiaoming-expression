@@ -18,8 +18,7 @@ package cn.codethink.xiaoming.expression.api;
 
 import cn.codethink.xiaoming.expression.LiteralExpression;
 import cn.codethink.xiaoming.expression.LiteralExpressionImpl;
-import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
-import cn.codethink.xiaoming.expression.formatter.FormattingConfigurationImpl;
+import cn.codethink.xiaoming.expression.format.*;
 import cn.codethink.xiaoming.expression.lang.*;
 
 public class APIImpl
@@ -66,12 +65,42 @@ public class APIImpl
     }
     
     @Override
-    public FormattingConfiguration getFormattingConfiguration() {
-        return FormattingConfigurationImpl.getInstance();
+    public FormatConfiguration getFormattingConfiguration() {
+        return FormatConfigurationImpl.getInstance();
     }
     
     @Override
-    public FormattingConfiguration.Builder getFormattingConfigurationBuilder() {
-        return new FormattingConfigurationImpl.BuilderImpl();
+    public FormatConfiguration.Builder getFormattingConfigurationBuilder() {
+        return new FormatConfigurationImpl.BuilderImpl();
+    }
+    
+    @Override
+    public TextFormatUnit getTextFormatUnit(int spacesBeforeText, String text, int spacesAfterText) {
+        return new TextFormatUnitImpl(spacesBeforeText, text, spacesAfterText);
+    }
+    
+    @Override
+    public SpacesFormatUnit getSpacesFormatUnit(int count) {
+        return SpacesFormatUnitImpl.of(count);
+    }
+    
+    @Override
+    public PairedFormatUnit getPairedFormatUnit(FormatUnit leftUnit, FormatUnit emptyUnit, FormatUnit rightUnit) {
+        return new PairedFormatUnitImpl(leftUnit, emptyUnit, rightUnit);
+    }
+    
+    @Override
+    public Formatter getFormatter(StringBuilder stringBuilder, FormatConfiguration configuration) {
+        return new FormatterImpl(stringBuilder, configuration);
+    }
+    
+    @Override
+    public Formatter getFormatter(FormatConfiguration configuration) {
+        return new FormatterImpl(configuration);
+    }
+    
+    @Override
+    public SpacesFormatUnit getEmptySpacesFormatUnit() {
+        return SpacesFormatUnitImpl.empty();
     }
 }

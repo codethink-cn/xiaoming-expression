@@ -17,7 +17,7 @@
 package cn.codethink.xiaoming.expression.api;
 
 import cn.codethink.xiaoming.expression.LiteralExpression;
-import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
+import cn.codethink.xiaoming.expression.format.*;
 import cn.codethink.xiaoming.expression.lang.Interpreter;
 
 /**
@@ -39,6 +39,14 @@ public interface API {
     LiteralExpression getLiteralExpression(char value);
     LiteralExpression getLiteralExpression(String value);
     
-    FormattingConfiguration getFormattingConfiguration();
-    FormattingConfiguration.Builder getFormattingConfigurationBuilder();
+    FormatConfiguration getFormattingConfiguration();
+    FormatConfiguration.Builder getFormattingConfigurationBuilder();
+    
+    TextFormatUnit getTextFormatUnit(int spacesBeforeText, String text, int spacesAfterText);
+    SpacesFormatUnit getSpacesFormatUnit(int count);
+    SpacesFormatUnit getEmptySpacesFormatUnit();
+    PairedFormatUnit getPairedFormatUnit(FormatUnit leftUnit, FormatUnit emptyUnit, FormatUnit rightUnit);
+    
+    Formatter getFormatter(StringBuilder stringBuilder, FormatConfiguration configuration);
+    Formatter getFormatter(FormatConfiguration configuration);
 }

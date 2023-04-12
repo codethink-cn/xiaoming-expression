@@ -18,7 +18,7 @@ package cn.codethink.xiaoming.expression.lang;
 
 import cn.codethink.xiaoming.expression.Expression;
 import cn.codethink.xiaoming.expression.api.APIFactory;
-import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
+import cn.codethink.xiaoming.expression.format.FormatConfiguration;
 
 import java.io.Reader;
 import java.util.List;
@@ -136,7 +136,7 @@ public interface Interpreter {
      * @param configuration 格式配置
      * @return 格式化后的表达式
      */
-    String format(Expression expression, FormattingConfiguration configuration);
+    String format(Expression expression, FormatConfiguration configuration);
     
     /**
      * 注册方法

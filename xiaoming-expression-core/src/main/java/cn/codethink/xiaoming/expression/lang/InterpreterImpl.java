@@ -20,13 +20,12 @@ import cn.codethink.xiaoming.expression.*;
 import cn.codethink.xiaoming.expression.acl.Scanner;
 import cn.codethink.xiaoming.expression.acl.parser;
 import cn.codethink.xiaoming.expression.annotation.Constructor;
-import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
-import cn.codethink.xiaoming.expression.formatter.FormattingItem;
-import cn.codethink.xiaoming.expression.formatter.FormattingSpaceItem;
-import cn.codethink.xiaoming.expression.formatter.FormattingTextItem;
+import cn.codethink.xiaoming.expression.format.*;
+import cn.codethink.xiaoming.expression.format.Formatter;
 import com.google.common.base.Preconditions;
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.io.File;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Method;
@@ -218,120 +217,113 @@ public class InterpreterImpl
     public String format(Expression expression) {
         Preconditions.checkNotNull(expression, "Expression is null!");
         
-        return format(expression, FormattingConfiguration.getInstance());
+        return format(expression, FormatConfiguration.getInstance());
     }
     
     @Override
-    public String format(Expression expression, FormattingConfiguration configuration) {
+    public String format(Expression expression, FormatConfiguration configuration) {
         Preconditions.checkNotNull(expression, "Expression is null!");
         Preconditions.checkNotNull(configuration, "Formatting configuration is null!");
+    
+        final Formatter formatter = new FormatterImpl(configuration);
+        plusFormatUnits(formatter, expression);
+        return formatter.toString();
+    }
+    
+    private void plusFormatUnits(Formatter formatter, Expression expression) {
         
         // 格式化常量类型
         if (expression instanceof LiteralExpression) {
             final Object constant = ((LiteralExpression) expression).getValue();
             if (constant == null) {
-                return "null";
+                formatter.plus("null");
+                return;
             }
-            
+        
             if (constant instanceof Integer) {
-                return constant.toString();
+                formatter.plus(constant.toString());
+                return;
             }
             if (constant instanceof Double) {
-                return constant.toString();
+                formatter.plus(constant.toString());
+                return;
             }
             if (constant instanceof Boolean) {
-                return constant.toString();
+                formatter.plus(constant.toString());
+                return;
             }
             if (constant instanceof Character) {
-                return "'" + StringEscapeUtils.escapeJava(String.valueOf(constant)) + "'";
+                formatter.plus("'" + StringEscapeUtils.escapeJava(String.valueOf(constant)) + "'");
+                return;
             }
             if (constant instanceof String) {
-                return "\"" + StringEscapeUtils.escapeJava((String) constant) + "\"";
+                formatter.plus("\"" + StringEscapeUtils.escapeJava((String) constant) + "\"");
+                return;
             }
-            
+        
             throw new IllegalArgumentException("Unexpected value in LiteralExpression: " + constant);
         }
-        
-        // 格式化元素列表
-        final List<FormattingItem> items = new ArrayList<>();
-        final FormattingItem comma = new FormattingTextItem(configuration.getSpacesBeforeComma(), ",", configuration.getSpacesAfterComma());
-        
+        final FormatConfiguration configuration = formatter.getConfiguration();
+        final FormatUnit comma = configuration.getComma();
+    
+        // 函数调用表达式
         if (expression instanceof InvokeExpression) {
-            final FormattingItem leftParenthesis = new FormattingTextItem(configuration.getSpacesBeforeLeftParenthesis(),
-                "(", configuration.getSpacesAfterLeftParenthesis());
-            final FormattingItem rightParenthesis = new FormattingTextItem(configuration.getSpacesBeforeRightParenthesis(),
-                ")", configuration.getSpacesAfterRightParenthesis());
-            
+            final PairedFormatUnit parenthesis = configuration.getParenthesis();
+        
             final InvokeExpression invokeExpression = (InvokeExpression) expression;
             final List<Expression> arguments = invokeExpression.getArguments();
-            
-            items.add(new FormattingTextItem(invokeExpression.getResultClass().getSimpleName()));
-            items.add(leftParenthesis);
-            
+        
+            formatter.plus(invokeExpression.getConstructor().getName());
+            formatter.plus(parenthesis.getLeftUnit());
+        
             if (arguments.isEmpty()) {
-                items.add(FormattingSpaceItem.of(configuration.getSpacesInEmptyBraces()));
+                formatter.plus(parenthesis.getEmptyUnit());
             } else {
                 final int size = arguments.size();
-                items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
+                plusFormatUnits(formatter, arguments.get(0));
                 for (int i = 1; i < size; i++) {
-                    items.add(comma);
-                    items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
+                    formatter.plus(comma);
+                    plusFormatUnits(formatter, arguments.get(i));
                 }
             }
-            
-            items.add(rightParenthesis);
-            return FormattingItem.toString(items, configuration.isMinimizeSpaces());
-        }
-        if (expression instanceof ListExpression) {
-            final FormattingItem leftBracket = new FormattingTextItem(configuration.getSpacesBeforeLeftBrackets(),
-                "[", configuration.getSpacesAfterLeftBrackets());
-            final FormattingItem rightBracket = new FormattingTextItem(configuration.getSpacesBeforeRightBrackets(),
-                "]", configuration.getSpacesAfterRightBrackets());
-            
-            final List<Expression> arguments = ((ListExpression) expression).getExpressions();
-            
-            items.add(leftBracket);
-            
-            if (arguments.isEmpty()) {
-                items.add(FormattingSpaceItem.of(configuration.getSpacesInEmptyBrackets()));
-            } else {
-                final int size = arguments.size();
-                items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
-                for (int i = 1; i < size; i++) {
-                    items.add(comma);
-                    items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
-                }
-            }
-            
-            items.add(rightBracket);
-            return FormattingItem.toString(items, configuration.isMinimizeSpaces());
-        }
-        if (expression instanceof SetExpression) {
-            final FormattingItem leftBrace = new FormattingTextItem(configuration.getSpacesBeforeLeftBraces(),
-                "{", configuration.getSpacesAfterLeftBraces());
-            final FormattingItem rightBrace = new FormattingTextItem(configuration.getSpacesBeforeRightBraces(),
-                "}", configuration.getSpacesAfterRightBraces());
-            
-            final List<Expression> arguments = ((SetExpression) expression).getExpressions();
-            
-            items.add(leftBrace);
-            
-            if (arguments.isEmpty()) {
-                items.add(FormattingSpaceItem.of(configuration.getSpacesInEmptyBraces()));
-            } else {
-                final int size = arguments.size();
-                items.add(FormattingItem.parse(format(arguments.get(0), configuration)));
-                for (int i = 1; i < size; i++) {
-                    items.add(comma);
-                    items.add(FormattingItem.parse(format(arguments.get(i), configuration)));
-                }
-            }
-            
-            items.add(rightBrace);
-            return FormattingItem.toString(items, configuration.isMinimizeSpaces());
+    
+            formatter.plus(parenthesis.getRightUnit());
+            return;
         }
         
+        // 列表表达式
+        if (expression instanceof ListExpression) {
+            final PairedFormatUnit brackets = configuration.getBrackets();
+            final List<Expression> arguments = ((ListExpression) expression).getExpressions();
+            plusFormatUnits(formatter, brackets, comma, arguments);
+            return;
+        }
+        
+        // 集合表达式
+        if (expression instanceof SetExpression) {
+            final PairedFormatUnit braces = configuration.getBraces();
+            final List<Expression> arguments = ((SetExpression) expression).getExpressions();
+            plusFormatUnits(formatter, braces, comma, arguments);
+        }
+    
         throw new IllegalArgumentException("Unexpected expression class: " + expression.getClass().getName());
+    }
+    
+    private void plusFormatUnits(Formatter formatter, PairedFormatUnit pairedFormatUnit, FormatUnit separator, List<Expression> expressions) {
+        formatter.plus(pairedFormatUnit.getLeftUnit());
+    
+        if (expressions.isEmpty()) {
+            formatter.plus(pairedFormatUnit.getEmptyUnit());
+        } else {
+            final int size = expressions.size();
+            plusFormatUnits(formatter, expressions.get(0));
+            for (int i = 1; i < size; i++) {
+                formatter.plus(separator);
+                plusFormatUnits(formatter, expressions.get(i));
+            }
+        }
+    
+        formatter.plus(pairedFormatUnit.getRightUnit());
     }
     
     @Override
