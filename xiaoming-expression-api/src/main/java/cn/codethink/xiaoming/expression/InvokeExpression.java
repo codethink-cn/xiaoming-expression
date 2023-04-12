@@ -16,7 +16,7 @@
 
 package cn.codethink.xiaoming.expression;
 
-import cn.codethink.xiaoming.expression.lang.Function;
+import cn.codethink.xiaoming.expression.interpreter.Function;
 
 import java.util.List;
 

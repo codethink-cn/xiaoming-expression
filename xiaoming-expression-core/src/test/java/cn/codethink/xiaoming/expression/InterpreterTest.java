@@ -16,9 +16,8 @@
 
 package cn.codethink.xiaoming.expression;
 
-import cn.codethink.xiaoming.expression.lang.Interpreter;
+import cn.codethink.xiaoming.expression.interpreter.Interpreter;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 public class InterpreterTest {

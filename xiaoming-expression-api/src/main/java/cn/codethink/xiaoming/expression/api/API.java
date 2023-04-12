@@ -18,7 +18,7 @@ package cn.codethink.xiaoming.expression.api;
 
 import cn.codethink.xiaoming.expression.LiteralExpression;
 import cn.codethink.xiaoming.expression.format.*;
-import cn.codethink.xiaoming.expression.lang.Interpreter;
+import cn.codethink.xiaoming.expression.interpreter.Interpreter;
 
 /**
  * <h1>表达式 API</h1>

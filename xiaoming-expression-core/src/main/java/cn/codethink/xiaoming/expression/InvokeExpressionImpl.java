@@ -16,7 +16,7 @@
 
 package cn.codethink.xiaoming.expression;
 
-import cn.codethink.xiaoming.expression.lang.Function;
+import cn.codethink.xiaoming.expression.interpreter.Function;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
