@@ -182,7 +182,7 @@ public class InterpreterImpl
             interpreter = interpreter.parent;
         }
         
-        return null;
+        throw new IllegalArgumentException("Can not analyze object");
     }
     
     private Expression analyze0(AnalyzingContext context) {
