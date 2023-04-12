@@ -18,6 +18,8 @@ package cn.codethink.xiaoming.expression.format;
 
 import com.google.common.base.Preconditions;
 
+import java.util.Objects;
+
 public class FormatConfigurationImpl
     implements FormatConfiguration {
     
@@ -90,6 +92,8 @@ public class FormatConfigurationImpl
     private final PairedFormatUnit brackets;
     private final PairedFormatUnit braces;
     
+    private Integer hashCodeCache;
+    
     public FormatConfigurationImpl(boolean compressSpaces, int maxSpaces,
                                    FormatUnit comma,
                                    PairedFormatUnit parenthesis,
@@ -137,5 +141,26 @@ public class FormatConfigurationImpl
     @Override
     public PairedFormatUnit getBraces() {
         return braces;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass() || hashCode() != o.hashCode()) return false;
+        FormatConfigurationImpl that = (FormatConfigurationImpl) o;
+        return compressSpaces == that.compressSpaces
+            && maxSpaces == that.maxSpaces
+            && Objects.equals(comma, that.comma)
+            && Objects.equals(parenthesis, that.parenthesis)
+            && Objects.equals(brackets, that.brackets)
+            && Objects.equals(braces, that.braces);
+    }
+    
+    @Override
+    public int hashCode() {
+        if (hashCodeCache == null) {
+            hashCodeCache = Objects.hash(compressSpaces, maxSpaces, comma, parenthesis, brackets, braces);
+        }
+        return hashCodeCache;
     }
 }

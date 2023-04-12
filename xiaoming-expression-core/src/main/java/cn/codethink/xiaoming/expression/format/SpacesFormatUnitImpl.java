@@ -79,9 +79,8 @@ public class SpacesFormatUnitImpl
     
     @Override
     public String toString() {
-        return "SpacesFormatUnitImpl{" +
+        return "SpacesFormatUnit{" +
             "count=" + count +
-            ", hashCodeCache=" + hashCodeCache +
             '}';
     }
 }
