@@ -112,6 +112,23 @@ public interface Interpreter {
     String format(Expression expression, FormatConfiguration configuration);
     
     /**
+     * 反编译对象，即分析和格式化
+     *
+     * @param subject 对象
+     * @return 表达式
+     */
+    String decompile(Object subject);
+    
+    /**
+     * 反编译对象，即分析和格式化
+     *
+     * @param subject 对象
+     * @param configuration 格式配置
+     * @return 表达式
+     */
+    String decompile(Object subject, FormatConfiguration configuration);
+    
+    /**
      * 注册方法
      *
      * @param subjects 主体

@@ -176,6 +176,16 @@ public class InterpreterImpl
         return formatter.toString();
     }
     
+    @Override
+    public String decompile(Object subject) {
+        return format(analyze(subject));
+    }
+    
+    @Override
+    public String decompile(Object subject, FormatConfiguration configuration) {
+        return format(analyze(subject), configuration);
+    }
+    
     public void plusFormatUnits(Formatter formatter, Expression expression) {
         
         // 格式化常量类型
