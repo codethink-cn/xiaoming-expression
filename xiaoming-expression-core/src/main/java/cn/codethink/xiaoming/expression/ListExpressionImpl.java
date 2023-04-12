@@ -1,6 +1,5 @@
 package cn.codethink.xiaoming.expression;
 
-import cn.codethink.xiaoming.expression.type.Type;
 import com.google.common.base.Preconditions;
 
 import java.util.*;
@@ -9,14 +8,11 @@ public class ListExpressionImpl
     implements ListExpression {
     
     private final List<Expression> expressions;
-    private final Type type;
     
-    public ListExpressionImpl(List<Expression> expressions, Type type) {
+    public ListExpressionImpl(List<Expression> expressions) {
         Preconditions.checkNotNull(expressions, "Expressions are null!");
-        Preconditions.checkNotNull(type, "Type is null!");
         
         this.expressions = expressions;
-        this.type = type;
     }
     
     @Override
@@ -25,20 +21,20 @@ public class ListExpressionImpl
     }
     
     @Override
-    public List<Object> calculate() throws CalculateException {
+    public List<Object> interpret() {
         if (expressions.isEmpty()) {
             return Collections.emptyList();
         }
         final List<Object> set = new ArrayList<>(expressions.size());
         for (Expression expression : expressions) {
-            set.add(expression.calculate());
+            set.add(expression.interpret());
         }
         return Collections.unmodifiableList(set);
     }
     
     @Override
-    public Type getType() {
-        return type;
+    public Class<?> getResultClass() {
+        return List.class;
     }
     
     @Override
@@ -55,11 +51,11 @@ public class ListExpressionImpl
             return false;
         }
         ListExpressionImpl that = (ListExpressionImpl) o;
-        return Objects.equals(expressions, that.expressions) && Objects.equals(type, that.type);
+        return Objects.equals(expressions, that.expressions);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(expressions, type);
+        return Objects.hash(expressions);
     }
 }

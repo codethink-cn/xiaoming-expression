@@ -1,34 +1,38 @@
-package cn.codethink.xiaoming.expression.constructor;
+package cn.codethink.xiaoming.expression.lang;
 
-import cn.codethink.xiaoming.expression.CalculateException;
-import cn.codethink.xiaoming.expression.constructor.Constructor;
-import cn.codethink.xiaoming.expression.type.JavaTypeImpl;
-import cn.codethink.xiaoming.expression.type.Parameter;
-import cn.codethink.xiaoming.expression.type.ParameterImpl;
-import cn.codethink.xiaoming.expression.type.Type;
 import com.google.common.base.Preconditions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class MethodConstructorImpl
-    implements Constructor {
+public class MethodFunctionImpl
+    implements Function {
     
-    private final List<Parameter> parameters;
+    private final List<Class<?>> parametersClasses;
     private final Method method;
-    private final Type type;
     private final Object subject;
+    private final String name;
     
-    public MethodConstructorImpl(Type type, Object subject, Method method) {
-        Preconditions.checkNotNull(type, "Type is null!");
+    public MethodFunctionImpl(String name, Object subject, Method method) {
+        Preconditions.checkNotNull(name, "Name is null!");
+        Preconditions.checkArgument(!name.isEmpty(), "Name is empty!");
         Preconditions.checkNotNull(method, "Method is null!");
-    
+        
+        this.name = name;
+        this.method = method;
+        this.subject = subject;
+        this.parametersClasses = Collections.unmodifiableList(Arrays.stream(method.getParameters())
+            .map(Parameter::getType)
+            .collect(Collectors.toList()));
+        
         final boolean isStatic = Modifier.isStatic(method.getModifiers());
-        final Class<?> javaClass = type.getJavaClass();
+        final Class<?> javaClass = method.getReturnType();
         if (isStatic) {
             if (subject == null || javaClass.isAssignableFrom(subject.getClass())) {
                 subject = method.getDeclaringClass();
@@ -42,36 +46,19 @@ public class MethodConstructorImpl
                 throw new IllegalArgumentException("Subject is not an instance of " + javaClass.getName());
             }
         }
-        
-        final java.lang.reflect.Parameter[] parameters = method.getParameters();
-        final List<Parameter> parameterList = new ArrayList<>(parameters.length);
-        
-        this.parameters = Collections.unmodifiableList(parameterList);
-        this.method = method;
-        this.type = type;
-        this.subject = subject;
-        
-        for (java.lang.reflect.Parameter parameter : parameters) {
-            parameterList.add(new ParameterImpl(parameter.getName(), parameter.getType()));
-        }
     }
     
     @Override
-    public Type getType() {
-        return type;
-    }
-    
-    @Override
-    public Object construct(List<Object> arguments) throws ConstructingException {
+    public Object invoke(List<Object> arguments) {
         Preconditions.checkNotNull(arguments, "Arguments are null!");
-        Preconditions.checkArgument(arguments.size() == parameters.size(),
-            "Count of arguments not equals to count of parameters! Required " + parameters.size() + ", but got " + arguments.size());
+        Preconditions.checkArgument(arguments.size() == parametersClasses.size(),
+            "Count of arguments not equals to count of parameters! Required " + parametersClasses.size() + ", but got " + arguments.size());
     
         final Object[] objects = arguments.toArray(new Object[0]);
         for (int i = 0; i < objects.length; i++) {
             final Object object = objects[i];
             if (object != null) {
-                final Class<?> parameterClass = parameters.get(i).getJavaClass();
+                final Class<?> parameterClass = parametersClasses.get(i);
                 final Class<?> objectClass = object.getClass();
                 if (!parameterClass.isAssignableFrom(objectClass)) {
                     throw new IllegalArgumentException("Unexpected argument type: " + parameterClass + " (at argument " + (i + 1) + ")");
@@ -84,16 +71,25 @@ public class MethodConstructorImpl
             method.setAccessible(true);
             return method.invoke(subject, objects);
         } catch (IllegalAccessException e) {
-            throw new ConstructingException("Can not access java method: " + method, e);
+            throw new IllegalArgumentException("Can not access java method: " + method, e);
         } catch (InvocationTargetException e) {
-            throw new ConstructingException("Exception thrown while constructing", e.getCause());
+            throw new IllegalArgumentException("Exception thrown while constructing", e.getCause());
         } finally {
             method.setAccessible(accessible);
         }
     }
     
     @Override
-    public List<Parameter> getParameters() {
-        return parameters;
+    public String getName() {
+        return name;
+    }
+    
+    @Override
+    public Class<?> getReturnClass() {
+        return method.getReturnType();
+    }
+    
+    public List<Class<?>> getParametersClasses() {
+        return parametersClasses;
     }
 }

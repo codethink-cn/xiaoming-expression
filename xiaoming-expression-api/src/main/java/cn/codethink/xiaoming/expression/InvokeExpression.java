@@ -1,6 +1,6 @@
 package cn.codethink.xiaoming.expression;
 
-import cn.codethink.xiaoming.expression.constructor.Constructor;
+import cn.codethink.xiaoming.expression.lang.Function;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author Chuanwise
  */
-public interface ConstructExpression
+public interface InvokeExpression
     extends Expression {
     
     /**
@@ -17,7 +17,7 @@ public interface ConstructExpression
      *
      * @return 构造函数
      */
-    Constructor getConstructor();
+    Function getConstructor();
     
     /**
      * 获取参数表达式

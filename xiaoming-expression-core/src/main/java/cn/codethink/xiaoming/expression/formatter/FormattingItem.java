@@ -1,7 +1,5 @@
 package cn.codethink.xiaoming.expression.formatter;
 
-import cn.codethink.xiaoming.expression.interpreter.FormattingSpaceItem;
-
 import java.util.List;
 
 /**

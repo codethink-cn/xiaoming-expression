@@ -19,5 +19,5 @@ public interface ListExpression
     List<Expression> getExpressions();
     
     @Override
-    List<Object> calculate() throws CalculateException;
+    List<Object> interpret() throws CalculateException;
 }

@@ -1,10 +1,8 @@
 package cn.codethink.xiaoming.expression.api;
 
-import cn.codethink.xiaoming.expression.analyzer.AnalyzingConfiguration;
-import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
+import cn.codethink.xiaoming.expression.LiteralExpression;
 import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
-import cn.codethink.xiaoming.expression.interpreter.ConfigurableInterpreter;
-import cn.codethink.xiaoming.expression.interpreter.Interpreter;
+import cn.codethink.xiaoming.expression.lang.Interpreter;
 
 /**
  * <h1>表达式 API</h1>
@@ -16,14 +14,14 @@ import cn.codethink.xiaoming.expression.interpreter.Interpreter;
 public interface API {
     
     Interpreter getInterpreter();
-    ConfigurableInterpreter getConfigurableInterpreter();
-    ConfigurableInterpreter getConfigurableInterpreter(Interpreter interpreter);
+    Interpreter getInterpreter(Interpreter interpreter);
     
-    AnalyzingConfiguration getAnalyzationConfiguration();
-    AnalyzingConfiguration.Builder getAnalyzationConfigurationBuilder();
-    
-    CompilingConfiguration getCompileConfiguration();
-    CompilingConfiguration.Builder getCompileConfigurationBuilder();
+    LiteralExpression getNullLiteralExpression();
+    LiteralExpression getLiteralExpression(int value);
+    LiteralExpression getLiteralExpression(double value);
+    LiteralExpression getLiteralExpression(boolean value);
+    LiteralExpression getLiteralExpression(char value);
+    LiteralExpression getLiteralExpression(String value);
     
     FormattingConfiguration getFormattingConfiguration();
     FormattingConfiguration.Builder getFormattingConfigurationBuilder();

@@ -1,12 +1,9 @@
 package cn.codethink.xiaoming.expression.api;
 
-import cn.codethink.xiaoming.expression.analyzer.AnalyzingConfiguration;
-import cn.codethink.xiaoming.expression.anlyzer.AnalyzingConfigurationImpl;
-import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
 import cn.codethink.xiaoming.expression.formatter.FormattingConfiguration;
 import cn.codethink.xiaoming.expression.formatter.FormattingConfigurationImpl;
-import cn.codethink.xiaoming.expression.interpreter.*;
-import cn.codethink.xiaoming.expression.util.ConfigurableInterpreters;
+import cn.codethink.xiaoming.expression.lang.*;
+import cn.codethink.xiaoming.expression.util.Interpreters;
 
 public class APIImpl
     implements API {
@@ -23,7 +20,7 @@ public class APIImpl
     
     @Override
     public ConfigurableInterpreter getConfigurableInterpreter() {
-        return ConfigurableInterpreters.getInstance();
+        return Interpreters.getInstance();
     }
     
     @Override

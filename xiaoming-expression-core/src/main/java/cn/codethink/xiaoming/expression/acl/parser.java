@@ -6,8 +6,7 @@
 package cn.codethink.xiaoming.expression.acl;
 
 import cn.codethink.xiaoming.expression.*;
-import cn.codethink.xiaoming.expression.compiler.CompilingConfiguration;
-import cn.codethink.xiaoming.expression.interpreter.*;
+import cn.codethink.xiaoming.expression.lang.*;
 import java_cup.runtime.Symbol;
 
 import java.util.*;
@@ -31,7 +30,7 @@ public class parser extends java_cup.runtime.lr_parser {
     }
     
     /**
-     * Constructor which sets the default scanner.
+     * Function which sets the default scanner.
      */
     @Deprecated
     public parser(java_cup.runtime.Scanner s) {
@@ -39,7 +38,7 @@ public class parser extends java_cup.runtime.lr_parser {
     }
     
     /**
-     * Constructor which sets the default scanner.
+     * Function which sets the default scanner.
      */
     public parser(java_cup.runtime.Scanner s, java_cup.runtime.SymbolFactory sf) {
         super(s, sf);
@@ -197,9 +196,8 @@ public class parser extends java_cup.runtime.lr_parser {
     
     
     Interpreter interpreter;
-    CompilingConfiguration configuration;
     
-    public void initialize(Interpreter interpreter, CompilingConfiguration configuration) {
+    public void initialize(Interpreter interpreter) {
         this.interpreter = interpreter;
         this.configuration = configuration;
     }
@@ -210,9 +208,7 @@ public class parser extends java_cup.runtime.lr_parser {
     }
     
     public void report_error(String message, Object info) {
-        if (configuration.isStrict()) {
-            report_fatal_error(message, info);
-        }
+        report_fatal_error(message, info);
     }
     
     public void report_fatal_error(String message, Object info) {
@@ -233,7 +229,7 @@ public class parser extends java_cup.runtime.lr_parser {
         private final parser parser;
         
         /**
-         * Constructor
+         * Function
          */
         CUP$parser$actions(parser parser) {
             this.parser = parser;
@@ -274,7 +270,7 @@ public class parser extends java_cup.runtime.lr_parser {
                     int lleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
                     int lright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
                     java.lang.Number l = (java.lang.Number) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-                    RESULT = ConstantExpressionImpl.of(l, interpreter.getTypeOrFail("Int"));
+                    RESULT = LiteralExpressionImpl.of(l, interpreter.getTypeOrFail("Int"));
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("literal", 0, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 return CUP$parser$result;
@@ -286,7 +282,7 @@ public class parser extends java_cup.runtime.lr_parser {
                     int lleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
                     int lright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
                     java.lang.Number l = (java.lang.Number) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-                    RESULT = ConstantExpressionImpl.of(l, interpreter.getTypeOrFail("Double"));
+                    RESULT = LiteralExpressionImpl.of(l, interpreter.getTypeOrFail("Double"));
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("literal", 0, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 return CUP$parser$result;
@@ -298,7 +294,7 @@ public class parser extends java_cup.runtime.lr_parser {
                     int lleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
                     int lright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
                     java.lang.Boolean l = (java.lang.Boolean) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-                    RESULT = ConstantExpressionImpl.of(l, interpreter.getTypeOrFail("Bool"));
+                    RESULT = LiteralExpressionImpl.of(l, interpreter.getTypeOrFail("Bool"));
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("literal", 0, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 return CUP$parser$result;
@@ -310,7 +306,7 @@ public class parser extends java_cup.runtime.lr_parser {
                     int lleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
                     int lright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
                     java.lang.Character l = (java.lang.Character) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-                    RESULT = ConstantExpressionImpl.of(l, interpreter.getTypeOrFail("Char"));
+                    RESULT = LiteralExpressionImpl.of(l, interpreter.getTypeOrFail("Char"));
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("literal", 0, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 return CUP$parser$result;
@@ -322,7 +318,7 @@ public class parser extends java_cup.runtime.lr_parser {
                     int lleft = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).left;
                     int lright = ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).right;
                     java.lang.String l = (java.lang.String) ((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-                    RESULT = ConstantExpressionImpl.of(l, interpreter.getTypeOrFail("String"));
+                    RESULT = LiteralExpressionImpl.of(l, interpreter.getTypeOrFail("String"));
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("literal", 0, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 return CUP$parser$result;
@@ -331,7 +327,7 @@ public class parser extends java_cup.runtime.lr_parser {
                 case 6: // literal ::= NULL_LITERAL
                 {
                     cn.codethink.xiaoming.expression.Expression RESULT = null;
-                    RESULT = ConstantExpressionImpl.ofNull();
+                    RESULT = LiteralExpressionImpl.ofNull();
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("literal", 0, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 return CUP$parser$result;
@@ -418,7 +414,7 @@ public class parser extends java_cup.runtime.lr_parser {
                     int lleft = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).left;
                     int lright = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).right;
                     java.util.List l = (java.util.List) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).value;
-                    RESULT = new ConstructExpressionImpl(t.getConstructorOrFail(((List<Expression>) l).stream().map(Expression::getType).collect(Collectors.toList())), l);
+                    RESULT = new InvokeExpressionImpl(t.getConstructorOrFail(((List<Expression>) l).stream().map(Expression::getResultClass).collect(Collectors.toList())), l);
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("method_invocation", 4, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 return CUP$parser$result;

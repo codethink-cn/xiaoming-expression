@@ -18,5 +18,5 @@ public interface IterableExpression
     List<Expression> getExpressions();
     
     @Override
-    Iterable<Object> calculate() throws CalculateException;
+    Iterable<Object> interpret() throws CalculateException;
 }

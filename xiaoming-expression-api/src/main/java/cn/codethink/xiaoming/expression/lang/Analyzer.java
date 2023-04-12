@@ -1,7 +1,10 @@
-package cn.codethink.xiaoming.expression.analyzer;
+package cn.codethink.xiaoming.expression.lang;
 
 import cn.codethink.xiaoming.expression.Expression;
+
 import java.net.URL;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * <h1>分析器</h1>
@@ -17,8 +20,6 @@ import java.net.URL;
  * }</pre></p>
  * 
  * @author Chuanwise
- * @see AnalyzingContext
- * @see AnalyzingConfiguration
  */
 public interface Analyzer {
     
@@ -26,8 +27,14 @@ public interface Analyzer {
      * 分析对象，构造表达式
      *
      * @param context 分析环境
-     * @throws AnalyzingException 分析过程中抛出的异常
      * @return 表达式
      */
-    Expression analyze(AnalyzingContext context) throws AnalyzingException;
+    Expression analyze(AnalyzingContext context);
+    
+    /**
+     * 获取分析主体类型
+     *
+     * @return 分析主体类型
+     */
+    Class<?> getSubjectClass();
 }

@@ -1,6 +1,5 @@
-package cn.codethink.xiaoming.expression.interpreter;
+package cn.codethink.xiaoming.expression.formatter;
 
-import cn.codethink.xiaoming.expression.formatter.FormattingItem;
 import com.google.common.base.Preconditions;
 
 public class FormattingSpaceItem
