@@ -143,22 +143,14 @@ public class InterpreterImpl
     
     @Override
     public Expression analyze(Object subject) {
-        return analyze(subject, Collections.emptySet());
-    }
-    
-    @Override
-    public Expression analyze(Object subject, Set<Object> properties) {
         if (subject == null) {
             return LiteralExpression.ofNull();
         }
         
-        Preconditions.checkNotNull(properties, "Properties are null!");
-        final AnalyzingContext context = new AnalyzingContextImpl(subject, properties, this);
-    
-        final Class<?> subjectClass = context.getSubject().getClass();
+        final Class<?> subjectClass = subject.getClass();
         for (Analyzer analyzer : analyzers) {
             if (analyzer.getSubjectClass().isAssignableFrom(subjectClass)) {
-                final Expression expression = analyzer.analyze(context);
+                final Expression expression = analyzer.analyze(subject, this);
                 if (expression != null) {
                     return expression;
                 }
@@ -224,25 +216,10 @@ public class InterpreterImpl
         // 函数调用表达式
         if (expression instanceof InvokeExpression) {
             final PairedFormatUnit parenthesis = configuration.getParenthesis();
-        
             final InvokeExpression invokeExpression = (InvokeExpression) expression;
             final List<Expression> arguments = invokeExpression.getArguments();
-        
             formatter.plus(invokeExpression.getConstructor().getName());
-            formatter.plus(parenthesis.getLeftUnit());
-        
-            if (arguments.isEmpty()) {
-                formatter.plus(parenthesis.getEmptyUnit());
-            } else {
-                final int size = arguments.size();
-                plusFormatUnits(formatter, arguments.get(0));
-                for (int i = 1; i < size; i++) {
-                    formatter.plus(comma);
-                    plusFormatUnits(formatter, arguments.get(i));
-                }
-            }
-    
-            formatter.plus(parenthesis.getRightUnit());
+            plusFormatUnits(formatter, parenthesis, comma, arguments);
             return;
         }
         

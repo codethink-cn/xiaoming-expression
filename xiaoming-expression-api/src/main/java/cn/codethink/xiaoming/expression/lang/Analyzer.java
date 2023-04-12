@@ -42,10 +42,11 @@ public interface Analyzer {
     /**
      * 分析对象，构造表达式
      *
-     * @param context 分析环境
+     * @param subject 分析主体
+     * @param interpreter 解释器
      * @return 表达式
      */
-    Expression analyze(AnalyzingContext context);
+    Expression analyze(Object subject, Interpreter interpreter);
     
     /**
      * 获取分析主体类型

@@ -76,52 +76,40 @@ public class MethodAnalyzerImpl
     }
     
     @Override
-    public Expression analyze(AnalyzingContext context) {
-        Preconditions.checkNotNull(context, "Analyzing context are null!");
+    public Expression analyze(Object subject, Interpreter interpreter) {
+        Preconditions.checkNotNull(subject, "Subject are null!");
+        Preconditions.checkNotNull(interpreter, "Interpreter are null!");
         
         final Object[] objects;
-        final Class<?> subjectClass = context.getSubject().getClass();
+        final Class<?> subjectClass = subject.getClass();
         if (parametersClasses.isEmpty()) {
             objects = EMPTY_ARRAY;
         } else {
-            final Set<Object> properties = context.getProperties();
             objects = new Object[parametersClasses.size()];
-    
-            final Set<Object> propertiesCandidates = new HashSet<>();
             for (int i = 0; i < parametersClasses.size(); i++) {
                 final Class<?> parameterClass = parametersClasses.get(i);
                 
                 if (parameterClass.isAssignableFrom(subjectClass)) {
-                    objects[i] = context.getSubject();
+                    objects[i] = subject;
                     continue;
                 }
-                if (parameterClass.isAssignableFrom(context.getInterpreter().getClass())) {
-                    objects[i] = context.getInterpreter();
+                if (parameterClass.isAssignableFrom(interpreter.getClass())) {
+                    objects[i] = interpreter;
                     continue;
                 }
     
-                for (Object property : properties) {
-                    if (parameterClass.isAssignableFrom(property.getClass())) {
-                        propertiesCandidates.add(property);
-                    }
-                }
-                if (propertiesCandidates.size() != 1) {
-                    return null;
-                }
-                
-                objects[i] = propertiesCandidates.iterator().next();
-                propertiesCandidates.clear();
+                return null;
             }
         }
         
         final boolean accessible = method.isAccessible();
         try {
             method.setAccessible(true);
-            return (Expression) method.invoke(subject, objects);
+            return (Expression) method.invoke(this.subject, objects);
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("Can not access java method: " + method);
         } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException("Exception thrown while analyzing " + context.getSubject(), e.getCause());
+            throw new IllegalArgumentException("Exception thrown while analyzing " + subject.getClass().getName(), e.getCause());
         } finally {
             method.setAccessible(accessible);
         }

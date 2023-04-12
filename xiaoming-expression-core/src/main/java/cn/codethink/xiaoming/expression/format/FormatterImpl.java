@@ -59,6 +59,7 @@ public class FormatterImpl
             } else {
                 appendSpaces(spaces + textFormatUnit.getSpacesBeforeText());
             }
+            spaces = 0;
     
             appendText(textFormatUnit.getText());
             
@@ -71,6 +72,7 @@ public class FormatterImpl
                 spaces = Math.max(spaces, spacesFormatUnit.getCount());
             } else {
                 appendSpaces(spaces + spacesFormatUnit.getCount());
+                spaces = 0;
             }
             return this;
         }
@@ -82,7 +84,7 @@ public class FormatterImpl
             return;
         }
         if (spaces < EMPTY_STRING_LENGTH) {
-            appendSpaces0(EMPTY_STRING_LENGTH);
+            appendSpaces0(spaces);
             return;
         }
         while (spaces > EMPTY_STRING_LENGTH) {
@@ -94,6 +96,10 @@ public class FormatterImpl
     
     private void appendText(String text) {
         if (stringBuilder != null) {
+            if (spaces > 0) {
+                appendSpaces0(spaces);
+                spaces = 0;
+            }
             stringBuilder.append(text);
             return;
         }
@@ -101,7 +107,15 @@ public class FormatterImpl
             string = text;
             return;
         }
-        stringBuilder = new StringBuilder(string);
+        if (spaces > 0) {
+            stringBuilder = new StringBuilder(spaces + text.length());
+            stringBuilder.append(string);
+            appendSpaces0(spaces);
+            spaces = 0;
+        } else {
+            stringBuilder = new StringBuilder(string);
+        }
+        stringBuilder.append(text);
     }
     
     private void appendSpaces0(int end) {
@@ -113,7 +127,7 @@ public class FormatterImpl
             string = EMPTY.substring(0, end);
             return;
         }
-        stringBuilder = new StringBuilder(string + end);
+        stringBuilder = new StringBuilder(string);
         stringBuilder.append(EMPTY, 0, end);
     }
     

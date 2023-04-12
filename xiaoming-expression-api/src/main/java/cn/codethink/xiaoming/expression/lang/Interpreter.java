@@ -96,15 +96,6 @@ public interface Interpreter {
     Expression analyze(Object subject);
     
     /**
-     * 分析对象为表达式
-     *
-     * @param subject    对象
-     * @param properties 属性
-     * @return 表达式
-     */
-    Expression analyze(Object subject, Set<Object> properties);
-    
-    /**
      * 格式化表达式
      *
      * @param expression 表达式
