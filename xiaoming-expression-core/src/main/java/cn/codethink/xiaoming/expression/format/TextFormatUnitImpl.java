@@ -28,6 +28,7 @@ public class TextFormatUnitImpl
     private final String text;
     
     private Integer hashCodeCache;
+    private String toStringCache;
     
     public TextFormatUnitImpl(int spacesBeforeText, String text, int spacesAfterText) {
         Preconditions.checkArgument(spacesBeforeText >= 0, "Count of spaces before content must be greater than or equals to 0!");
@@ -87,5 +88,17 @@ public class TextFormatUnitImpl
             hashCodeCache = Objects.hash(spacesBeforeText, spacesAfterText, text);
         }
         return hashCodeCache;
+    }
+    
+    @Override
+    public String toString() {
+        if (toStringCache == null) {
+            toStringCache = "TextFormatUnitImpl{" +
+                "spacesBeforeText=" + spacesBeforeText +
+                ", text='" + text + '\'' +
+                ", spacesAfterText=" + spacesAfterText +
+                '}';
+        }
+        return toStringCache;
     }
 }
