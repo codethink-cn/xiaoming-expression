@@ -145,10 +145,15 @@ public class InterpreterImpl
             final Scanner scanner = new Scanner(reader);
             final parser parser = new parser(scanner);
             parser.initialize(this);
-            
+    
             return (Expression) parser.parse().value;
         } catch (Exception e) {
-            throw new IllegalArgumentException(e);
+            final String message = e.getMessage();
+            if (message == null || message.isEmpty()) {
+                throw new IllegalStateException("Exception thrown while compiling", e);
+            } else {
+                throw new IllegalStateException(e.getMessage());
+            }
         }
     }
     
@@ -174,13 +179,14 @@ public class InterpreterImpl
             }
             interpreter = interpreter.parent;
         }
+        
         return null;
     }
     
     private Expression analyze0(AnalyzingContext context) {
-        final Object subjectClass = context.getSubject();
+        final Class<?> subjectClass = context.getSubject().getClass();
         for (Analyzer analyzer : analyzers) {
-            if (analyzer.getSubjectClass().isAssignableFrom(analyzer.getSubjectClass())) {
+            if (analyzer.getSubjectClass().isAssignableFrom(subjectClass)) {
                 final Expression expression = analyzer.analyze(context);
                 if (expression != null) {
                     return expression;
@@ -241,7 +247,7 @@ public class InterpreterImpl
             final InvokeExpression invokeExpression = (InvokeExpression) expression;
             final List<Expression> arguments = invokeExpression.getArguments();
             
-            items.add(new FormattingTextItem(invokeExpression.getResultClass().getName()));
+            items.add(new FormattingTextItem(invokeExpression.getResultClass().getSimpleName()));
             items.add(leftParenthesis);
             
             if (arguments.isEmpty()) {

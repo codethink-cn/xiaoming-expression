@@ -69,13 +69,18 @@ public class MethodAnalyzerImpl
             objects = EMPTY_ARRAY;
         } else {
             final Set<Object> properties = context.getProperties();
-            objects = new Object[properties.size()];
+            objects = new Object[parametersClasses.size()];
     
             final Set<Object> propertiesCandidates = new HashSet<>();
             for (int i = 0; i < parametersClasses.size(); i++) {
                 final Class<?> parameterClass = parametersClasses.get(i);
+                
                 if (parameterClass.isAssignableFrom(subjectClass)) {
                     objects[i] = context.getSubject();
+                    continue;
+                }
+                if (parameterClass.isAssignableFrom(context.getInterpreter().getClass())) {
+                    objects[i] = context.getInterpreter();
                     continue;
                 }
     
