@@ -71,7 +71,8 @@ public class InterpreterImpl
     
             boolean matches = true;
             for (int i = 0; i < size; i++) {
-                if (!functionParametersClasses.get(i).isAssignableFrom(parametersClasses.get(i))) {
+                final Class<?> parameterClass = parametersClasses.get(i);
+                if (parameterClass != null && !functionParametersClasses.get(i).isAssignableFrom(parameterClass)) {
                     matches = false;
                     break;
                 }
@@ -103,7 +104,8 @@ public class InterpreterImpl
     
                 boolean matches = true;
                 for (int i = 0; i < size; i++) {
-                    if (!functionParametersClasses.get(i).isAssignableFrom(parametersClasses.get(i))) {
+                    final Class<?> parameterClass = parametersClasses.get(i);
+                    if (parameterClass != null && !functionParametersClasses.get(i).isAssignableFrom(parameterClass)) {
                         matches = false;
                         break;
                     }

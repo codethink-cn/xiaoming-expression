@@ -14,7 +14,7 @@ public class LiteralExpressionImpl
         Integer.class, Double.class, Character.class, Boolean.class, String.class
     ));
     
-    private static final LiteralExpressionImpl NULL = new LiteralExpressionImpl(null, Void.class);
+    private static final LiteralExpressionImpl NULL = new LiteralExpressionImpl(null, null);
     
     public static LiteralExpression of(Object value) {
         Preconditions.checkNotNull(value, "Value is null!");

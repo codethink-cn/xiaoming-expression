@@ -89,12 +89,8 @@ public class MethodAnalyzerImpl
                         propertiesCandidates.add(property);
                     }
                 }
-                if (propertiesCandidates.isEmpty()) {
-                    throw new NoSuchElementException("No such property that is an instance of " + parameterClass.getName());
-                }
-                if (propertiesCandidates.size() > 1) {
-                    throw new IllegalArgumentException("Ambiguous properties class: " + parameterClass.getName() +
-                        ", " + propertiesCandidates.size() + " candidates found!");
+                if (propertiesCandidates.size() != 1) {
+                    return null;
                 }
                 
                 objects[i] = propertiesCandidates.iterator().next();
