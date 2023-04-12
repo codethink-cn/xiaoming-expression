@@ -30,11 +30,6 @@ public class APIImpl
     }
     
     @Override
-    public Interpreter getInterpreter(Interpreter interpreter) {
-        return new InterpreterImpl(interpreter);
-    }
-    
-    @Override
     public LiteralExpression getNullLiteralExpression() {
         return LiteralExpressionImpl.ofNull();
     }

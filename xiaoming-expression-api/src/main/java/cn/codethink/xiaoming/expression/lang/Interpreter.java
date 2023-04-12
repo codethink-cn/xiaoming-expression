@@ -38,28 +38,11 @@ public interface Interpreter {
     /**
      * 获取解释器
      *
-     * @param parent 父解释器
-     * @return 解释器
-     */
-    static Interpreter newInstance(Interpreter parent) {
-        return APIFactory.getInstance().getInterpreter(parent);
-    }
-    
-    /**
-     * 获取解释器
-     *
      * @return 解释器
      */
     static Interpreter newInstance() {
         return APIFactory.getInstance().getInterpreter();
     }
-    
-    /**
-     * 获取父解释器
-     *
-     * @return 父解释器或 null
-     */
-    Interpreter getParent();
     
     /**
      * 获取方法

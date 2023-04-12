@@ -30,60 +30,34 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InterpreterImpl
     implements Interpreter {
     
-    private final InterpreterImpl parent;
     private final List<Analyzer> analyzers = new CopyOnWriteArrayList<>();
-    private final List<Function> functions = new CopyOnWriteArrayList<>();
-    
-    public InterpreterImpl() {
-        this.parent = null;
-    }
-    
-    public InterpreterImpl(Interpreter parent) {
-        Preconditions.checkNotNull(parent, "Parent is null!");
-        Preconditions.checkArgument(parent instanceof InterpreterImpl, "Unexpected parent, expect an instance of " + InterpreterImpl.class.getName());
-        
-        this.parent = (InterpreterImpl) parent;
-    }
-    
-    @Override
-    public Interpreter getParent() {
-        return parent;
-    }
+    private final Map<String, Map<Integer, List<Function>>> functions = new ConcurrentHashMap<>();
     
     @Override
     public List<Function> getFunctions(String name, List<Class<?>> parametersClasses) {
         Preconditions.checkNotNull(name, "Name is null!");
         Preconditions.checkNotNull(parametersClasses, "Parameter classes is null!");
         
-        final List<Function> functions = new ArrayList<>();
-        InterpreterImpl interpreter = this;
-        while (interpreter != null) {
-            functions.addAll(getFunctions0(name, parametersClasses));
-            interpreter = interpreter.parent;
-        }
-        
-        return Collections.unmodifiableList(functions);
-    }
-    
-    private List<Function> getFunctions0(String name, List<Class<?>> parametersClasses) {
         final int size = parametersClasses.size();
-        final List<Function> functions = new ArrayList<>();
-        
-        for (Function function : this.functions) {
-            if (!function.getName().equals(name)) {
-                continue;
-            }
-            
-            final List<Class<?>> functionParametersClasses = function.getParametersClasses();
-            if (size != functionParametersClasses.size()) {
-                continue;
-            }
+        final Map<Integer, List<Function>> sameNameFunctions = this.functions.get(name);
+        if (sameNameFunctions == null) {
+            return Collections.emptyList();
+        }
     
+        final List<Function> sameParameterFunctions = sameNameFunctions.get(parametersClasses.size());
+        if (sameParameterFunctions == null) {
+            return Collections.emptyList();
+        }
+    
+        final List<Function> functions = new ArrayList<>();
+        for (Function function : sameParameterFunctions) {
+            final List<Class<?>> functionParametersClasses = function.getParametersClasses();
             boolean matches = true;
             for (int i = 0; i < size; i++) {
                 final Class<?> parameterClass = parametersClasses.get(i);
@@ -96,43 +70,36 @@ public class InterpreterImpl
                 functions.add(function);
             }
         }
-        
-        return functions;
+        return Collections.unmodifiableList(functions);
     }
     
     @Override
     public Function getFunction(String name, List<Class<?>> parametersClasses) {
         final int size = parametersClasses.size();
-        
-        InterpreterImpl interpreter = this;
-        while (interpreter != null) {
+        final Map<Integer, List<Function>> sameNameFunctions = this.functions.get(name);
+        if (sameNameFunctions == null) {
+            return null;
+        }
     
-            for (Function function : interpreter.functions) {
-                if (!function.getName().equals(name)) {
-                    continue;
-                }
-    
-                final List<Class<?>> functionParametersClasses = function.getParametersClasses();
-                if (size != functionParametersClasses.size()) {
-                    continue;
-                }
-    
-                boolean matches = true;
-                for (int i = 0; i < size; i++) {
-                    final Class<?> parameterClass = parametersClasses.get(i);
-                    if (parameterClass != null && !functionParametersClasses.get(i).isAssignableFrom(parameterClass)) {
-                        matches = false;
-                        break;
-                    }
-                }
-                if (matches) {
-                    return function;
-                }
-            }
-            
-            interpreter = interpreter.parent;
+        final List<Function> sameParameterFunctions = sameNameFunctions.get(parametersClasses.size());
+        if (sameParameterFunctions == null) {
+            return null;
         }
         
+        for (Function function : sameParameterFunctions) {
+            final List<Class<?>> functionParametersClasses = function.getParametersClasses();
+            boolean matches = true;
+            for (int i = 0; i < size; i++) {
+                final Class<?> parameterClass = parametersClasses.get(i);
+                if (parameterClass != null && !functionParametersClasses.get(i).isAssignableFrom(parameterClass)) {
+                    matches = false;
+                    break;
+                }
+            }
+            if (matches) {
+                return function;
+            }
+        }
         return null;
     }
     
@@ -187,20 +154,7 @@ public class InterpreterImpl
         
         Preconditions.checkNotNull(properties, "Properties are null!");
         final AnalyzingContext context = new AnalyzingContextImpl(subject, properties, this);
-        
-        InterpreterImpl interpreter = this;
-        while (interpreter != null) {
-            final Expression expression = interpreter.analyze0(context);
-            if (expression != null) {
-                return expression;
-            }
-            interpreter = interpreter.parent;
-        }
-        
-        throw new IllegalArgumentException("Can not analyze object");
-    }
     
-    private Expression analyze0(AnalyzingContext context) {
         final Class<?> subjectClass = context.getSubject().getClass();
         for (Analyzer analyzer : analyzers) {
             if (analyzer.getSubjectClass().isAssignableFrom(subjectClass)) {
@@ -210,7 +164,8 @@ public class InterpreterImpl
                 }
             }
         }
-        return null;
+        
+        throw new IllegalArgumentException("Can not analyze object");
     }
     
     @Override
@@ -230,7 +185,7 @@ public class InterpreterImpl
         return formatter.toString();
     }
     
-    private void plusFormatUnits(Formatter formatter, Expression expression) {
+    public void plusFormatUnits(Formatter formatter, Expression expression) {
         
         // 格式化常量类型
         if (expression instanceof LiteralExpression) {
@@ -346,8 +301,10 @@ public class InterpreterImpl
                 if (name.isEmpty()) {
                     name = declaredMethod.getReturnType().getSimpleName();
                 }
-                
-                functions.add(new MethodFunctionImpl(name, subject, declaredMethod));
+    
+                final MethodFunctionImpl function = new MethodFunctionImpl(name, subject, declaredMethod);
+                functions.computeIfAbsent(name, n -> new ConcurrentHashMap<>())
+                    .computeIfAbsent(function.getParametersClasses().size(), n -> new CopyOnWriteArrayList<>()).add(function);
             }
     
             final cn.codethink.xiaoming.expression.annotation.Function functionAnnotation =
@@ -358,7 +315,9 @@ public class InterpreterImpl
                     name = declaredMethod.getName();
                 }
     
-                functions.add(new MethodFunctionImpl(name, subject, declaredMethod));
+                final MethodFunctionImpl function = new MethodFunctionImpl(name, subject, declaredMethod);
+                functions.computeIfAbsent(name, n -> new ConcurrentHashMap<>())
+                    .computeIfAbsent(function.getParametersClasses().size(), n -> new CopyOnWriteArrayList<>()).add(function);
             }
     
             final cn.codethink.xiaoming.expression.annotation.Analyzer analyzerAnnotation =

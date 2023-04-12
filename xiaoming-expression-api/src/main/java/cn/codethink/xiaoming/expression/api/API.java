@@ -30,7 +30,6 @@ import cn.codethink.xiaoming.expression.lang.Interpreter;
 public interface API {
     
     Interpreter getInterpreter();
-    Interpreter getInterpreter(Interpreter interpreter);
     
     LiteralExpression getNullLiteralExpression();
     LiteralExpression getLiteralExpression(int value);
