@@ -19,5 +19,5 @@ public interface SetExpression
     List<Expression> getExpressions();
     
     @Override
-    Set<Object> interpret() throws CalculateException;
+    Set<Object> interpret();
 }
