@@ -92,6 +92,6 @@ argument_list ::=
 	|	argument_list:l COMMA expression:e          {: RESULT = l; l.add(e); :}
 	;
 collection_creation_expression ::=
-    LBRACE argument_list_opt:l RBRACE           {: RESULT = new SetExpressionImpl(l, interpreter.getTypeOrFail("Set")); :}
-  | LBRACK argument_list_opt:l RBRACK           {: RESULT = new ListExpressionImpl(l, interpreter.getTypeOrFail("List")); :}
+    LBRACE argument_list_opt:l RBRACE           {: RESULT = new SetExpressionImpl(l); :}
+  | LBRACK argument_list_opt:l RBRACK           {: RESULT = new ListExpressionImpl(l); :}
 	;
